@@ -1,7 +1,9 @@
 {
     "agents": [
         "opencode",
-        "gemini"
+        "gemini",
+        "frontend",
+        "backend"
     ],
     "cloud": false,
     "guidelines": true,
