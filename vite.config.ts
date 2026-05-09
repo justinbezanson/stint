@@ -7,6 +7,14 @@ import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    server: {
+        host: '0.0.0.0', // Listen on all network interfaces
+        port: 5173,      // Ensure this matches your docker-compose port
+        strictPort: true,
+        hmr: {
+            host: 'localhost', // The address your BROWSER uses to talk to Vite
+        },
+    },
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.ts'],
