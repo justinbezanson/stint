@@ -18,6 +18,8 @@ type Props = {
 
 const handleLogout = () => {
     router.flushAll();
+    //route to ssr homepage
+    window.location.href = '/';
 };
 
 defineProps<Props>();
