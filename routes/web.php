@@ -13,6 +13,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    Route::inertia('log-reading', 'LogReading')->name('log-reading');
 });
 
 require __DIR__.'/settings.php';
