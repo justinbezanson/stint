@@ -15,7 +15,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div :class="cn('border-1 rounded-md flex')">
+  <div :class="cn('border-1 rounded-md flex h-[36px]')">
     <!-- Left Button -->
     <button 
       type="button" 
