@@ -28,11 +28,11 @@
 <script setup lang="ts">
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek } from '@/types';
+import TableBody from './ui/table/TableBody.vue';
+import TableCell from './ui/table/TableCell.vue';
 import TableHead from './ui/table/TableHead.vue';
 import TableHeader from './ui/table/TableHeader.vue';
 import TableRow from './ui/table/TableRow.vue';
-import TableBody from './ui/table/TableBody.vue';
-import TableCell from './ui/table/TableCell.vue';
 
 
 const props = defineProps<{
@@ -45,15 +45,13 @@ const previousMonth: ReadingLogMonth = {
 };
 
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-let maxDayOfPreviousMonth = new Date(previousMonth.year, previousMonth.month + 1, 0).getDate();
+const maxDayOfPreviousMonth = new Date(previousMonth.year, previousMonth.month + 1, 0).getDate();
 
 const buildRows = (): ReadingLogWeek[] => {
     const weeks: ReadingLogWeek[] = [];
-    let day;
-
-    let date = new Date(props.currentMonth.year, props.currentMonth.month, 1);
-    let daysInMonth = new Date(props.currentMonth.year, props.currentMonth.month + 1, 0).getDate();
-    let firstDay = date.getDay();
+    const date = new Date(props.currentMonth.year, props.currentMonth.month, 1);
+    const daysInMonth = new Date(props.currentMonth.year, props.currentMonth.month + 1, 0).getDate();
+    const firstDay = date.getDay();
     let week: ReadingLogWeek = {
         week: 1,
         year: props.currentMonth.year,
@@ -83,7 +81,8 @@ const buildRows = (): ReadingLogWeek[] => {
         }
     }
 
-    let remainingDays = 7 - week.days.length;
+    const remainingDays = 7 - week.days.length;
+
     for(let i = 0; i < remainingDays; i++) {
         week.days.push({
             date: i + 1,
