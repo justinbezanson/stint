@@ -13,10 +13,32 @@
                     <TableCell 
                         v-for="(day, dayIndex) in week.days" 
                         :key="day.date" 
-                        :class="{ 'border-l-1': dayIndex > 0 }"
+                        class="p-0"
                     >
-                        <div class="min-h-28">
-                            {{ day.date }}
+                        <div class="min-h-28 p-0 m-0">
+                            <div 
+                                class="p-2 font-bold"
+                                :class="{ 
+                                    'border-l-1': dayIndex > 0,
+                                    'text-gray-400': !day.isCurrentMonth,
+                                }"
+                            >
+                                {{ day.date }}
+                            </div>  
+
+                            <div 
+                                class="py-2 bg-orange-200"
+                                :class="{ 'hidden': dayIndex%2 === 0 }"
+                            >
+                                streak
+                            </div>
+                            
+                            <div 
+                                class="p-2"
+                                :class="{ 'border-l-1': dayIndex > 0 }"
+                            >
+                                entries
+                            </div>
                         </div>
                     </TableCell>
                 </TableRow>                
@@ -26,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek } from '@/types';
 import TableBody from './ui/table/TableBody.vue';
@@ -38,6 +61,10 @@ import TableRow from './ui/table/TableRow.vue';
 const props = defineProps<{
     currentMonth: ReadingLogMonth;
 }>();
+
+watch(() => props.currentMonth, () => {
+    weekRows.value = buildRows();
+}, { deep: true });
 
 const previousMonth: ReadingLogMonth = {
     month: props.currentMonth.month === 0 ? 11 : props.currentMonth.month - 1,
@@ -62,6 +89,7 @@ const buildRows = (): ReadingLogWeek[] => {
         week.days.push({
             date: maxDayOfPreviousMonth - firstDay + i + 1,
             entries: [],
+            isCurrentMonth: false,
         });
     }
 
@@ -69,6 +97,7 @@ const buildRows = (): ReadingLogWeek[] => {
         week.days.push({
             date: day,
             entries: [],
+            isCurrentMonth: true,
         });
 
         if (week.days.length === 7) {
@@ -81,12 +110,17 @@ const buildRows = (): ReadingLogWeek[] => {
         }
     }
 
+    if(week.days.length === 0) {
+        return weeks;
+    }
+    
     const remainingDays = 7 - week.days.length;
 
     for(let i = 0; i < remainingDays; i++) {
         week.days.push({
             date: i + 1,
             entries: [],
+            isCurrentMonth: false
         });
     }
 
@@ -95,7 +129,7 @@ const buildRows = (): ReadingLogWeek[] => {
     return weeks;
 };
 
-const weekRows: ReadingLogWeek[] = buildRows();
+const weekRows = ref<ReadingLogWeek[]>(buildRows());
 </script>
 
 <style scoped>
