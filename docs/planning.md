@@ -27,6 +27,8 @@ Books: https://openlibrary.org/search.json?title=the+lord+of+the+rings
 
 Covers: https://covers.openlibrary.org/b/olid/OL7440033M-S.jpg
 
+Search for title and author: https://openlibrary.org/search.json?q=robert+jordan
+
 ## Add UserAgent for 3x Rate Limit
 
 ```
