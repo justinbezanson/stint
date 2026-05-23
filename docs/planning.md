@@ -17,7 +17,7 @@ logs
 - user_id
 - log_date #date only, no time
 - created_date #date and time
-- duration #convert to minutes, accept 10m, 1h, 1h 30m, 1h30m, 10 m, 1 h, etc
+- duration #save as int, convert to minutes, accept 10m, 1h, 1h 30m, 1h30m, 10 m, 1 h, etc
 
 ## OpenLibrary API
 
