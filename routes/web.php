@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\LogReadingController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\LogReadingController;
 
 // Route::inertia('/', 'Welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),

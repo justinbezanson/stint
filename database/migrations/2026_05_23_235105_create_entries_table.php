@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->date('log_date');
-            $table->integer('duration'); //minutes
+            $table->integer('duration'); // minutes
             $table->timestamps();
         });
     }
