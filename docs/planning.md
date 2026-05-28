@@ -45,3 +45,7 @@ fetch(url, options)
     .then(data => console.log(data))
     .catch(error => console.error('Error:', error));
 ```
+
+## Admin Dashboard
+
+For managing users, books, authors, logs, and other infrastructure.

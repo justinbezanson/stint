@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('olid')->nullable(); // Open Library ID
+            $table->foreignId('author_id')->nullable()->constrained('authors')->onDelete('set null');
             $table->timestamps();
         });
     }
