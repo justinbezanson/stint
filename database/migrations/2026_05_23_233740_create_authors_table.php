@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('email')->unique()->nullable();
+            $table->text('bio')->nullable();
             $table->string('olid')->nullable(); // Open Library ID
             $table->timestamps();
         });
