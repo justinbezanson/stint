@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Book extends Model
 {
     use HasFactory;
-    
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(Author::class);

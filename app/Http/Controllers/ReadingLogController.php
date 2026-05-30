@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entry;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use App\Models\Entry;
 
 class ReadingLogController extends Controller
 {
@@ -13,7 +13,7 @@ class ReadingLogController extends Controller
         $currentStreak = 0; // TODO: get current streak
         $longestStreak = 0; // TODO: get longest streak
 
-        //entries for this month and last 7 days of previous month
+        // entries for this month and last 7 days of previous month
         $entries = Entry::where('user_id', $request->user()->id)
             ->whereBetween('log_date', [
                 now()->startOfMonth()->subDays(7),
@@ -27,5 +27,5 @@ class ReadingLogController extends Controller
             'longestStreak' => $longestStreak,
             'entries' => $entries,
         ]);
-    }   
+    }
 }
