@@ -19,7 +19,6 @@ class AuthorFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
             'olid' => fake()->optional()->isbn13(),
         ];
     }

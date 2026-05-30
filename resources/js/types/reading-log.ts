@@ -20,3 +20,31 @@ export type ReadingLogWeek = {
     year: number;
     days: ReadingLogDay[];
 }
+
+export type Author = {
+    id: number;
+    name: string;
+    olid: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+export type Book = {
+    id: number;
+    title: string;
+    author_id: number;
+    author: Author;
+    created_at: string;
+    updated_at: string;
+};
+
+export type ReadingLogEntryRecord = {
+    id: number;
+    user_id: number;
+    book_id: number;
+    log_date: string;
+    duration: number;
+    book: Book;
+    created_at: string;
+    updated_at: string;
+};

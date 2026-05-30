@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LogReadingController;
+use App\Http\Controllers\ReadingLogController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -13,8 +14,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
-    Route::get('log-reading', [LogReadingController::class, 'index'])->name('log-reading');
+    Route::get('/dashboard', [ReadingLogController::class, 'index'])->name('dashboard');
+    Route::get('/log-reading', [LogReadingController::class, 'index'])->name('log-reading');
 });
 
 require __DIR__.'/settings.php';

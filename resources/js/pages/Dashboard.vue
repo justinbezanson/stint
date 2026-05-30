@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import { CalendarDays, List, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { CalendarDays, List, ChevronLeft, ChevronRight, Flame } from 'lucide-vue-next'
 import { ref } from 'vue';
 import ReadingLogCalendarView from '@/components/ReadingLogCalendarView.vue';
 import ReadingLogListView from '@/components/ReadingLogListView.vue';
 import Button from '@/components/ui/button/Button.vue';
 import SwitchLogView from '@/components/ui/switch-log-view/SwitchLogView.vue';
 import { dashboard } from '@/routes';
-import type { ReadingLogMonth } from '@/types/reading-log';
+import type { ReadingLogMonth, ReadingLogEntryRecord } from '@/types/reading-log';
 
 defineOptions({
     layout: {
@@ -19,6 +19,12 @@ defineOptions({
         ],
     },
 });
+
+const props = defineProps<{
+    currentStreak: number;
+    longestStreak: number;
+    entries: ReadingLogEntryRecord[];
+}>();
 
 const today = new Date();
 const monthNames = [
@@ -54,6 +60,8 @@ const nextMonth = () => {
     }
 };
 
+console.log(props.entries);
+
 </script>
 
 <template>
@@ -78,9 +86,23 @@ const nextMonth = () => {
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div class="text-center border-1 m-2 p-8 rounded-lg">Current Streak</div>
-            <div class="text-center border-1 m-2 p-8 rounded-lg">Longest Streak</div>
+        <div class="grid grid-cols-2 gap-4 font-bold text-xl">
+            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-red-100">
+                <Flame :size="36" class="text-amber-500" />
+                <div>
+                    <div v-if="props.currentStreak === 1">{{ props.currentStreak }} Day</div>
+                    <div v-else>{{ props.currentStreak }} Days</div>
+                    <div class="font-normal text-sm">Current Streak</div>
+                </div>
+            </div>  
+            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-amber-100">
+                <Flame :size="36" class="text-amber-500" />
+                <div>
+                    <div v-if="props.longestStreak === 1">{{ props.longestStreak }} Day</div>
+                    <div v-else>{{ props.longestStreak }} Days</div>
+                    <div class="font-normal text-sm">Longest Streak</div>
+                </div>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
