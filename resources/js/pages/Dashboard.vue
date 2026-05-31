@@ -7,7 +7,7 @@ import ReadingLogListView from '@/components/ReadingLogListView.vue';
 import Button from '@/components/ui/button/Button.vue';
 import SwitchLogView from '@/components/ui/switch-log-view/SwitchLogView.vue';
 import { dashboard } from '@/routes';
-import type { ReadingLogMonth, ReadingLogEntryRecord } from '@/types/reading-log';
+import type { ReadingLogMonth, GroupedReadingLogEntries } from '@/types/reading-log';
 
 defineOptions({
     layout: {
@@ -23,7 +23,7 @@ defineOptions({
 const props = defineProps<{
     currentStreak: number;
     longestStreak: number;
-    entries: ReadingLogEntryRecord[];
+    entries: GroupedReadingLogEntries;
 }>();
 
 const today = new Date();
@@ -60,7 +60,7 @@ const nextMonth = () => {
     }
 };
 
-console.log(props.entries);
+console.log(props.entries); 
 
 </script>
 
@@ -118,8 +118,13 @@ console.log(props.entries);
         </div>
 
         <div>
-            <ReadingLogCalendarView v-if="logView === 'calendar'" :current-month="currentMonth" />
-            <ReadingLogListView v-else-if="logView === 'list'" :current-month="currentMonth" />
+            <ReadingLogCalendarView 
+                v-if="logView === 'calendar'" 
+                :current-month="currentMonth"
+                :entries="props.entries"
+            />
+
+            <ReadingLogListView v-else-if="logView === 'list'" :current-month="currentMonth" :entries="props.entries" />
         </div>
     </div>
 </template>

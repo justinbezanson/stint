@@ -10,8 +10,8 @@ class ReadingLogController extends Controller
 {
     public function index(Request $request): Response
     {
-        $currentStreak = 0; // TODO: get current streak
-        $longestStreak = 0; // TODO: get longest streak
+        $currentStreak = Entry::getCurrentStreak($request->user());
+        $longestStreak = Entry::getLongestStreak($request->user());
 
         // entries for this month and last 7 days of previous month
         $entries = Entry::where('user_id', $request->user()->id)
@@ -22,10 +22,19 @@ class ReadingLogController extends Controller
             ->with('book.author')
             ->get();
 
+        $formattedEntries = [];
+        foreach ($entries as $entry) {
+            if (! isset($formattedEntries[$entry->log_date])) {
+                $formattedEntries[$entry->log_date] = [];
+            }
+
+            $formattedEntries[$entry->log_date][] = $entry;
+        }
+
         return inertia('Dashboard', [
             'currentStreak' => $currentStreak,
             'longestStreak' => $longestStreak,
-            'entries' => $entries,
+            'entries' => $formattedEntries,
         ]);
     }
 }

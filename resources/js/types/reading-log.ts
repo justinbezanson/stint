@@ -48,3 +48,5 @@ export type ReadingLogEntryRecord = {
     created_at: string;
     updated_at: string;
 };
+
+export type GroupedReadingLogEntries = Record<string, ReadingLogEntryRecord[]>;
