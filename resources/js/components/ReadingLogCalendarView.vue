@@ -32,7 +32,7 @@
                             >
                                 streak
                             </div>
-                            
+
                             <div 
                                 class="p-2"
                                 :class="{ 'border-l-1': dayIndex > 0 }"
@@ -53,12 +53,14 @@
             </TableBody>
         </Table>
     </div>
+    <CalendarViewLoader v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries} from '@/types';
+import CalendarViewLoader from './CalendarViewLoader.vue';
 import TableBody from './ui/table/TableBody.vue';
 import TableCell from './ui/table/TableCell.vue';
 import TableHead from './ui/table/TableHead.vue';
@@ -69,6 +71,8 @@ const props = defineProps<{
     currentMonth: ReadingLogMonth;
     entries: GroupedReadingLogEntries;
 }>();
+
+const isLoading = ref(false);
 
 watch(() => props.currentMonth, () => {
     weekRows.value = buildRows();
