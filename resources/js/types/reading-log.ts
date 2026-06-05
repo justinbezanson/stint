@@ -50,3 +50,10 @@ export type ReadingLogEntryRecord = {
 };
 
 export type GroupedReadingLogEntries = Record<string, ReadingLogEntryRecord[]>;
+
+export type DashboardProps = {
+    currentStreak: number;
+    longestStreak: number;
+    entries: GroupedReadingLogEntries;
+    currentMonth: ReadingLogMonth;
+}

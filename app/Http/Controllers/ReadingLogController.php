@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReadingLogGetRequest;
 use App\Models\Entry;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Inertia\Response;
 
 class ReadingLogController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(ReadingLogGetRequest $request): Response
     {
+        $date = $request->getDate();
+        $month = Carbon::parse($date.'-01');
         $currentStreak = Entry::getCurrentStreak($request->user());
         $longestStreak = Entry::getLongestStreak($request->user());
 
-        // entries for this month and last 7 days of previous month
         $entries = Entry::where('user_id', $request->user()->id)
             ->whereBetween('log_date', [
-                now()->startOfMonth()->subDays(7),
-                now()->endOfMonth(),
+                $month->copy()->startOfMonth()->subDays(7),
+                $month->copy()->endOfMonth()->addDays(7),
             ])
             ->with('book.author')
             ->get();
@@ -35,6 +37,10 @@ class ReadingLogController extends Controller
             'currentStreak' => $currentStreak,
             'longestStreak' => $longestStreak,
             'entries' => $formattedEntries,
+            'currentMonth' => [
+                'year' => $month->format('Y'),
+                'month' => intval($month->format('m')),
+            ],
         ]);
     }
 }

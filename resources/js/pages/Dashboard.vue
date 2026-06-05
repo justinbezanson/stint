@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { CalendarDays, List, ChevronLeft, ChevronRight, Flame } from 'lucide-vue-next'
-import { ref } from 'vue';
+import { ref, computed, onMounted} from 'vue';
 import ReadingLogCalendarView from '@/components/ReadingLogCalendarView.vue';
 import ReadingLogListView from '@/components/ReadingLogListView.vue';
 import Button from '@/components/ui/button/Button.vue';
 import SwitchLogView from '@/components/ui/switch-log-view/SwitchLogView.vue';
 import { dashboard } from '@/routes';
-import type { ReadingLogMonth, GroupedReadingLogEntries } from '@/types/reading-log';
+import type { ReadingLogMonth, GroupedReadingLogEntries, DashboardProps } from '@/types/reading-log';
 
 defineOptions({
     layout: {
@@ -20,31 +20,35 @@ defineOptions({
     },
 });
 
-const props = defineProps<{
-    currentStreak: number;
-    longestStreak: number;
-    entries: GroupedReadingLogEntries;
-}>();
+const props = defineProps<DashboardProps>();
 
-const today = new Date();
 const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+const today = new Date();
 const logView = ref('calendar');
+const isLoading = ref(false);
+const logEntries = ref<GroupedReadingLogEntries>(props.entries);
 const currentMonth = ref<ReadingLogMonth>({
-    month: today.getMonth(),
-    year: today.getFullYear(),
+    month: props.currentMonth.month-1,
+    year: props.currentMonth.year,
 });
 
-const previousMonth = () => {
+const monthTitle = computed(() => {
+    return `${monthNames[currentMonth.value.month]} ${currentMonth.value.year}`;
+});
+
+const previousMonth = () => {    
     if (currentMonth.value.month === 0) {
         currentMonth.value.month = 11;
         currentMonth.value.year -= 1;
     } else {
         currentMonth.value.month -= 1;
     }
+
+    updateEntires(currentMonth.value);
 };
 
 const nextMonth = () => {
@@ -58,9 +62,28 @@ const nextMonth = () => {
     } else {
         currentMonth.value.month += 1;
     }
+
+    updateEntires(currentMonth.value);
 };
 
-console.log(props.entries); 
+const updateEntires = (currentMonth: ReadingLogMonth) => {
+    isLoading.value = true;
+
+    router.get(dashboard(), { date: `${currentMonth.year}-${String(currentMonth.month + 1).padStart(2, '0')}` }, {
+        preserveState: true,
+        onSuccess: (page) => {
+            logEntries.value = page.props.entries as GroupedReadingLogEntries;
+        },
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    });
+};
+
+onMounted(() => {
+    console.log('Dashboard mounted with props:', currentMonth.value);
+});
+
 
 </script>
 
@@ -106,7 +129,7 @@ console.log(props.entries);
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="text-left"><h2>{{ monthNames[currentMonth.month] }} {{ currentMonth.year }}</h2></div>
+            <div class="text-left"><h2>{{ monthTitle }}</h2></div>
             <div class="text-right">
                 <Button class="btn" variant="outline" size="icon" title="Previous Month" @click="previousMonth">
                     <ChevronLeft />
@@ -121,10 +144,11 @@ console.log(props.entries);
             <ReadingLogCalendarView 
                 v-if="logView === 'calendar'" 
                 :current-month="currentMonth"
-                :entries="props.entries"
+                :entries="logEntries"
+                :is-loading="isLoading"
             />
 
-            <ReadingLogListView v-else-if="logView === 'list'" :current-month="currentMonth" :entries="props.entries" />
+            <ReadingLogListView v-else-if="logView === 'list'" :current-month="currentMonth" :entries="logEntries" />
         </div>
     </div>
 </template>

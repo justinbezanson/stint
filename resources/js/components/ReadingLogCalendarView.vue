@@ -53,11 +53,11 @@
             </TableBody>
         </Table>
     </div>
-    <CalendarViewLoader v-if="isLoading" />
+    <CalendarViewLoader v-if="props.isLoading" />
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries} from '@/types';
 import CalendarViewLoader from './CalendarViewLoader.vue';
@@ -70,21 +70,10 @@ import TableRow from './ui/table/TableRow.vue';
 const props = defineProps<{
     currentMonth: ReadingLogMonth;
     entries: GroupedReadingLogEntries;
+    isLoading: boolean;
 }>();
 
-const isLoading = ref(false);
-
-watch(() => props.currentMonth, () => {
-    weekRows.value = buildRows();
-}, { deep: true });
-
-const previousMonth: ReadingLogMonth = {
-    month: props.currentMonth.month === 0 ? 11 : props.currentMonth.month - 1,
-    year: props.currentMonth.month === 0 ? props.currentMonth.year - 1 : props.currentMonth.year,
-};
-
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const maxDayOfPreviousMonth = new Date(previousMonth.year, previousMonth.month + 1, 0).getDate();
 
 const getDateKey = (year: number, month: number, day: number): string => {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -102,6 +91,13 @@ const getEntriesForDate = (year: number, month: number, day: number) => {
 };
 
 const buildRows = (): ReadingLogWeek[] => {
+    const previousMonth: ReadingLogMonth = {
+        month: props.currentMonth.month === 0 ? 11 : props.currentMonth.month - 1,
+        year: props.currentMonth.month === 0 ? props.currentMonth.year - 1 : props.currentMonth.year,
+    };
+
+    const maxDayOfPreviousMonth = new Date(previousMonth.year, previousMonth.month + 1, 0).getDate();
+
     const weeks: ReadingLogWeek[] = [];
     const date = new Date(props.currentMonth.year, props.currentMonth.month, 1);
     const daysInMonth = new Date(props.currentMonth.year, props.currentMonth.month + 1, 0).getDate();
@@ -156,7 +152,7 @@ const buildRows = (): ReadingLogWeek[] => {
     return weeks;
 };
 
-const weekRows = ref<ReadingLogWeek[]>(buildRows());
+const weekRows = computed<ReadingLogWeek[]>(() => buildRows());
 </script>
 
 <style scoped>
