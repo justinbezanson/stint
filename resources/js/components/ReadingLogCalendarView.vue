@@ -13,13 +13,14 @@
                     <TableCell 
                         v-for="(day, dayIndex) in week.days" 
                         :key="day.date" 
-                        class="p-0 whitespace-normal align-top"
+                        class="p-0 whitespace-normal align-top relative"
                     >
+                        <div v-if="dayIndex > 0" class="absolute inset-y-0 w-px bg-border pointer-events-none"></div>
                         <div class="min-h-28 p-0 m-0">
                             <div 
                                 class="p-2 font-bold"
                                 :class="{ 
-                                    'border-l-1': dayIndex > 0,
+                                    
                                     'text-gray-400': !day.isCurrentMonth,
                                 }"
                             >
@@ -37,8 +38,7 @@
                             />
 
                             <div 
-                                class="p-2"
-                                :class="{ 'border-l-1': dayIndex > 0 }"
+                                class="p-2 flex-1"
                             >
                                 <div 
                                     v-for="entry in day.entries" 

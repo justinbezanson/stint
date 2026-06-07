@@ -1,6 +1,6 @@
 <template>
     <template v-if="isStreakStart">
-        <div :class="{ 'border-l-1': dayIndex > 0 }">
+        <div>
             <div 
                 class="py-2 bg-orange-200 rounded-l-lg ml-4 border-l-6 border-l-orange-500"
                 :class="{ 'hidden': day.entries.length === 0 }"
@@ -11,9 +11,9 @@
     </template>
 
     <template v-else-if="isStreakEnd">
-        <div :class="{ 'border-r-1': dayIndex < 6 }">
+        <div>
             <div 
-                class="py-2 bg-orange-200 rounded-r-lg mr-4 flex justify-end"
+                class="py-2 bg-orange-200 rounded-r-lg mr-4 flex justify-end relative z-10"
                 :class="{ 'hidden': day.entries.length === 0 }"
             >
                 <Flame :size="24" class="text-amber-500 mr-2" />
@@ -23,7 +23,7 @@
 
     <template v-else>
         <div 
-            class="py-2 bg-orange-200"
+            class="py-2 bg-orange-200 relative z-10"
             :class="{ 'hidden': day.entries.length === 0 }"
         >
             &nbsp;
