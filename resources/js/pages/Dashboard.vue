@@ -9,6 +9,8 @@ import SwitchLogView from '@/components/ui/switch-log-view/SwitchLogView.vue';
 import { dashboard } from '@/routes';
 import type { ReadingLogMonth, GroupedReadingLogEntries, DashboardProps } from '@/types/reading-log';
 
+//TODO: navigation breaks when going beyonf december
+
 defineOptions({
     layout: {
         breadcrumbs: [

@@ -9,7 +9,7 @@
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow v-for="week in weekRows" :key="week.week">
+                <TableRow v-for="(week, weekIndex) in weekRows" :key="week.week">
                     <TableCell 
                         v-for="(day, dayIndex) in week.days" 
                         :key="day.date" 
@@ -26,12 +26,15 @@
                                 {{ day.date }}
                             </div>  
 
-                            <div 
-                                class="py-2 bg-orange-200"
-                                :class="{ 'hidden': dayIndex%2 === 0 }"
-                            >
-                                streak
-                            </div>
+                            <ReadingLogCalendarViewStreak 
+                                v-if="day.entries.length > 0"
+                                :previous-day="week.days[dayIndex - 1] || { entries: [] }"
+                                :day="day"
+                                :day-index="dayIndex"
+                                :next-day="week.days[dayIndex + 1] || { entries: [] }"
+                                :previous-week="weekRows[weekIndex - 1] || { days: [] }"
+                                :next-week="weekRows[weekIndex + 1] || { days: [] }"
+                            />
 
                             <div 
                                 class="p-2"
@@ -40,7 +43,7 @@
                                 <div 
                                     v-for="entry in day.entries" 
                                     :key="entry.bookTitle + entry.duration"
-                                    class="mb-2 rounded-md bg-sky-100 p-2 min-w-0 w-full break-words border-l-6 border-l-sky-600 text-sky-600"
+                                    class="mb-2 ml-2 mr-2 rounded-md bg-sky-100 p-2 min-w-0 break-words border-l-6 border-l-sky-600 text-sky-600"
                                 >
                                     <div class="font-bold">{{ entry.bookTitle }}</div>
                                     <div class="text-sm">{{ entry.bookAuthor }}</div>
@@ -61,6 +64,7 @@ import { computed } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries} from '@/types';
 import CalendarViewLoader from './CalendarViewLoader.vue';
+import ReadingLogCalendarViewStreak from './ReadingLogCalendarViewStreak.vue';
 import TableBody from './ui/table/TableBody.vue';
 import TableCell from './ui/table/TableCell.vue';
 import TableHead from './ui/table/TableHead.vue';
