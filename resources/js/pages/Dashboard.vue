@@ -35,7 +35,7 @@ const isLoading = ref(false);
 const logEntries = ref<GroupedReadingLogEntries>(props.entries);
 const currentMonth = ref<ReadingLogMonth>({
     month: props.currentMonth.month-1,
-    year: props.currentMonth.year,
+    year: Number(props.currentMonth.year),
 });
 
 const monthTitle = computed(() => {
@@ -64,6 +64,8 @@ const nextMonth = () => {
     } else {
         currentMonth.value.month += 1;
     }
+
+    console.log(currentMonth.value);
 
     updateEntires(currentMonth.value);
 };
