@@ -16,6 +16,12 @@
                 class="py-2 bg-orange-200 rounded-r-lg mr-4 flex justify-end relative z-10"
                 :class="{ 'hidden': day.entries.length === 0 }"
             >
+                <span 
+                    class="text-orange-600 font-bold text-sm relative mr-2"
+                    style="top: 2px;"
+                >
+                    {{ streakLength }}
+                </span>
                 <Flame :size="24" class="text-amber-500 mr-2" />
             </div>
         </div>
@@ -35,6 +41,12 @@
 import { Flame } from 'lucide-vue-next';
 import { computed } from 'vue';
 import type { ReadingLogDay, ReadingLogWeek} from '@/types';
+
+declare global {
+    interface Window {
+        __STINT_RLCV_STREAK_COUNTER?: number;
+    }
+}
 
 const props = defineProps<{
     previousDay: ReadingLogDay;
@@ -60,6 +72,18 @@ const isStreakEnd = computed(() => {
 
     return dayHasEntries && !nextDayHasEntries;
 });
+
+const streakLength = computed(() => {
+    const len = window.__STINT_RLCV_STREAK_COUNTER ?? 0;
+
+    return `${len} day streak`;
+});
+
+if (isStreakStart.value) {
+    window.__STINT_RLCV_STREAK_COUNTER = 1;
+} else {
+    window.__STINT_RLCV_STREAK_COUNTER = (window.__STINT_RLCV_STREAK_COUNTER ?? 0) + 1;
+}
 
 </script>
 
