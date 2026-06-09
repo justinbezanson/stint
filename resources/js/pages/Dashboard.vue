@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { CalendarDays, List, ChevronLeft, ChevronRight, Flame } from 'lucide-vue-next'
-import { ref, computed, onMounted} from 'vue';
+import { ref, computed } from 'vue';
 import ReadingLogCalendarView from '@/components/ReadingLogCalendarView.vue';
 import ReadingLogListView from '@/components/ReadingLogListView.vue';
 import Button from '@/components/ui/button/Button.vue';

@@ -164,6 +164,7 @@ const streakDayInfo = computed<Record<string, number>>(() => {
     const info: Record<string, number> = {};
 
     const flat: { weekIdx: number; dayIdx: number; entries: ReadingLogEntry[] }[] = [];
+
     for (let wi = 0; wi < weeks.length; wi++) {
         for (let di = 0; di < weeks[wi].days.length; di++) {
             flat.push({ weekIdx: wi, dayIdx: di, entries: weeks[wi].days[di].entries });
@@ -171,16 +172,21 @@ const streakDayInfo = computed<Record<string, number>>(() => {
     }
 
     let i = 0;
+
     while (i < flat.length) {
         if (flat[i].entries.length > 0) {
             let j = i;
+
             while (j < flat.length && flat[j].entries.length > 0) {
                 j++;
             }
+
             const streakLength = j - i;
+
             for (let k = i; k < j; k++) {
                 info[`${flat[k].weekIdx}-${flat[k].dayIdx}`] = streakLength;
             }
+
             i = j;
         } else {
             i++;
