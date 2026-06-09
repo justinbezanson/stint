@@ -65,8 +65,6 @@ const nextMonth = () => {
         currentMonth.value.month += 1;
     }
 
-    console.log(currentMonth.value);
-
     updateEntires(currentMonth.value);
 };
 
@@ -83,10 +81,6 @@ const updateEntires = (currentMonth: ReadingLogMonth) => {
         }
     });
 };
-
-onMounted(() => {
-    console.log('Dashboard mounted with props:', currentMonth.value);
-});
 
 
 </script>
