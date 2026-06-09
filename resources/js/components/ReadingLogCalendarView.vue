@@ -35,6 +35,7 @@
                                 :next-day="week.days[dayIndex + 1] || { entries: [] }"
                                 :previous-week="weekRows[weekIndex - 1] || { days: [] }"
                                 :next-week="weekRows[weekIndex + 1] || { days: [] }"
+                                :streak-length="streakDayInfo[`${weekIndex}-${dayIndex}`] ?? 0"
                             />
 
                             <div 
@@ -62,7 +63,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
-import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries} from '@/types';
+import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries, ReadingLogEntry} from '@/types';
 import CalendarViewLoader from './CalendarViewLoader.vue';
 import ReadingLogCalendarViewStreak from './ReadingLogCalendarViewStreak.vue';
 import TableBody from './ui/table/TableBody.vue';
@@ -157,6 +158,37 @@ const buildRows = (): ReadingLogWeek[] => {
 };
 
 const weekRows = computed<ReadingLogWeek[]>(() => buildRows());
+
+const streakDayInfo = computed<Record<string, number>>(() => {
+    const weeks = weekRows.value;
+    const info: Record<string, number> = {};
+
+    const flat: { weekIdx: number; dayIdx: number; entries: ReadingLogEntry[] }[] = [];
+    for (let wi = 0; wi < weeks.length; wi++) {
+        for (let di = 0; di < weeks[wi].days.length; di++) {
+            flat.push({ weekIdx: wi, dayIdx: di, entries: weeks[wi].days[di].entries });
+        }
+    }
+
+    let i = 0;
+    while (i < flat.length) {
+        if (flat[i].entries.length > 0) {
+            let j = i;
+            while (j < flat.length && flat[j].entries.length > 0) {
+                j++;
+            }
+            const streakLength = j - i;
+            for (let k = i; k < j; k++) {
+                info[`${flat[k].weekIdx}-${flat[k].dayIdx}`] = streakLength;
+            }
+            i = j;
+        } else {
+            i++;
+        }
+    }
+
+    return info;
+});
 </script>
 
 <style scoped>
