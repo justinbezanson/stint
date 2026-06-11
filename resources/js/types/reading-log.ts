@@ -13,6 +13,7 @@ export type ReadingLogDay = {
     date: number;
     entries: ReadingLogEntry[];
     isCurrentMonth: boolean;
+    dayOfWeek: number;
 }
 
 export type ReadingLogWeek = {

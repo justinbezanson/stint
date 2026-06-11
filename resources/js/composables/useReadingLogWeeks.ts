@@ -38,6 +38,7 @@ export function useReadingLogWeeks(entries: GroupedReadingLogEntries, currentMon
             date: maxDayOfPreviousMonth - firstDay + i + 1,
             entries: getEntriesForDate(entries, previousMonth.year, previousMonth.month, maxDayOfPreviousMonth - firstDay + i + 1),
             isCurrentMonth: false,
+            dayOfWeek: i
         });
     }
 
@@ -46,6 +47,7 @@ export function useReadingLogWeeks(entries: GroupedReadingLogEntries, currentMon
             date: day,
             entries: getEntriesForDate(entries, currentMonth.year, currentMonth.month, day),
             isCurrentMonth: true,
+            dayOfWeek: (firstDay + day - 1) % 7
         });
 
         if (week.days.length === 7) {
@@ -68,7 +70,8 @@ export function useReadingLogWeeks(entries: GroupedReadingLogEntries, currentMon
         week.days.push({
             date: i + 1,
             entries: getEntriesForDate(entries, currentMonth.year, currentMonth.month + 1, i + 1),
-            isCurrentMonth: false
+            isCurrentMonth: false,
+            dayOfWeek: (firstDay + daysInMonth + i) % 7
         });
     }
 
