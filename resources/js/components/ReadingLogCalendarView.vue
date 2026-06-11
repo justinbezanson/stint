@@ -64,6 +64,7 @@
 import { computed } from 'vue';
 import Table from '@/components/ui/table/Table.vue';
 import type { ReadingLogMonth, ReadingLogWeek, GroupedReadingLogEntries, ReadingLogEntry} from '@/types';
+import { useReadingLogWeeks } from '../composables/useReadingLogWeeks';
 import CalendarViewLoader from './CalendarViewLoader.vue';
 import ReadingLogCalendarViewStreak from './ReadingLogCalendarViewStreak.vue';
 import TableBody from './ui/table/TableBody.vue';
@@ -80,84 +81,7 @@ const props = defineProps<{
 
 const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const getDateKey = (year: number, month: number, day: number): string => {
-    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-};
-
-const getEntriesForDate = (year: number, month: number, day: number) => {
-    const dateKey = getDateKey(year, month, day);
-    const entriesForDate = props.entries[dateKey] || [];
-
-    return entriesForDate.map(entry => ({
-        bookAuthor: entry.book.author.name,
-        bookTitle: entry.book.title,
-        duration: entry.duration,
-    }));
-};
-
-const buildRows = (): ReadingLogWeek[] => {
-    const previousMonth: ReadingLogMonth = {
-        month: props.currentMonth.month === 0 ? 11 : props.currentMonth.month - 1,
-        year: props.currentMonth.month === 0 ? props.currentMonth.year - 1 : props.currentMonth.year,
-    };
-
-    const maxDayOfPreviousMonth = new Date(previousMonth.year, previousMonth.month + 1, 0).getDate();
-
-    const weeks: ReadingLogWeek[] = [];
-    const date = new Date(props.currentMonth.year, props.currentMonth.month, 1);
-    const daysInMonth = new Date(props.currentMonth.year, props.currentMonth.month + 1, 0).getDate();
-    const firstDay = date.getDay();
-    let week: ReadingLogWeek = {
-        week: 1,
-        year: props.currentMonth.year,
-        days: []
-    }
-
-    for(let i = 0; i < firstDay; i++) {
-        week.days.push({
-            date: maxDayOfPreviousMonth - firstDay + i + 1,
-            entries: getEntriesForDate(previousMonth.year, previousMonth.month, maxDayOfPreviousMonth - firstDay + i + 1),
-            isCurrentMonth: false,
-        });
-    }
-
-    for(let day = 1; day <= daysInMonth; day++) {
-        week.days.push({
-            date: day,
-            entries: getEntriesForDate(props.currentMonth.year, props.currentMonth.month, day),
-            isCurrentMonth: true,
-        });
-
-        if (week.days.length === 7) {
-            weeks.push(week);
-            week = {
-                week: week.week + 1,
-                year: props.currentMonth.year,
-                days: [],
-            }
-        }
-    }
-
-    if(week.days.length === 0) {
-        return weeks;
-    }
-    
-    const remainingDays = 7 - week.days.length;
-
-    for(let i = 0; i < remainingDays; i++) {
-        week.days.push({
-            date: i + 1,
-            entries: getEntriesForDate(props.currentMonth.year, props.currentMonth.month + 1, i + 1),
-            isCurrentMonth: false
-        });
-    }
-
-    weeks.push(week);
-
-    return weeks;
-};
-
-const weekRows = computed<ReadingLogWeek[]>(() => buildRows());
+const weekRows = computed<ReadingLogWeek[]>(() => useReadingLogWeeks(props.entries, props.currentMonth));
 
 const streakDayInfo = computed<Record<string, number>>(() => {
     const weeks = weekRows.value;

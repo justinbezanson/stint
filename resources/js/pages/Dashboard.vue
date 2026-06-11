@@ -9,8 +9,6 @@ import SwitchLogView from '@/components/ui/switch-log-view/SwitchLogView.vue';
 import { dashboard } from '@/routes';
 import type { ReadingLogMonth, GroupedReadingLogEntries, DashboardProps } from '@/types/reading-log';
 
-//TODO: navigation breaks when going beyonf december
-
 defineOptions({
     layout: {
         breadcrumbs: [
@@ -146,7 +144,12 @@ const updateEntires = (currentMonth: ReadingLogMonth) => {
                 :is-loading="isLoading"
             />
 
-            <ReadingLogListView v-else-if="logView === 'list'" :current-month="currentMonth" :entries="logEntries" />
+            <ReadingLogListView 
+                v-else-if="logView === 'list'" 
+                :current-month="currentMonth" 
+                :entries="logEntries" 
+                :is-loading="isLoading"
+            />
         </div>
     </div>
 </template>
