@@ -14,6 +14,7 @@ export type ReadingLogDay = {
     entries: ReadingLogEntry[];
     isCurrentMonth: boolean;
     dayOfWeek: number;
+    streakCount: number;
 }
 
 export type ReadingLogWeek = {

@@ -11,13 +11,14 @@
                         <div>
                             <div 
                                 class="p-2 mr-8 bg-orange-200 rounded-xl flex"
+                                :class="{ 'hidden': day.entries.length === 0 }"
                             >
                                 <Flame :size="24" class="text-amber-500 mr-2" />
                                 <span 
                                     class="text-orange-600 font-bold text-sm relative mr-2"
-                                    style="top: 2px;"
+                                    style="top: 2px;" 
                                 >
-                                    ####
+                                    {{ day.streakCount }}
                                 </span>
                             </div>
                         </div>

@@ -1,10 +1,22 @@
-import type { GroupedReadingLogEntries, ReadingLogWeek, ReadingLogMonth } from '@/types';
+import type { GroupedReadingLogEntries, ReadingLogWeek, ReadingLogMonth, ReadingLogEntry } from '@/types';
+
+let streakCount: number = 0;
 
 const getDateKey = (year: number, month: number, day: number): string => {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 };
 
-const getEntriesForDate = (entries: GroupedReadingLogEntries, year: number, month: number, day: number) => {
+const getStreakCount = (entries: ReadingLogEntry[]) => {
+    if(entries.length > 0) {
+        streakCount++;
+    } else {
+        streakCount = 0;
+    }
+
+    return streakCount;
+};
+
+const getEntriesForDate = (entries: GroupedReadingLogEntries, year: number, month: number, day: number): ReadingLogEntry[] => {
     const dateKey = getDateKey(year, month, day);
     const entriesForDate = entries[dateKey] || [];
 
@@ -34,18 +46,22 @@ export function useReadingLogWeeks(entries: GroupedReadingLogEntries, currentMon
     }
 
     for(let i = 0; i < firstDay; i++) {
+        const dayEntries = getEntriesForDate(entries, previousMonth.year, previousMonth.month, maxDayOfPreviousMonth - firstDay + i + 1);
         week.days.push({
             date: maxDayOfPreviousMonth - firstDay + i + 1,
-            entries: getEntriesForDate(entries, previousMonth.year, previousMonth.month, maxDayOfPreviousMonth - firstDay + i + 1),
+            entries: dayEntries,
             isCurrentMonth: false,
-            dayOfWeek: i
+            dayOfWeek: i,
+            streakCount: getStreakCount(dayEntries),
         });
     }
 
     for(let day = 1; day <= daysInMonth; day++) {
+        const dayEntries = getEntriesForDate(entries, currentMonth.year, currentMonth.month, day);
         week.days.push({
             date: day,
-            entries: getEntriesForDate(entries, currentMonth.year, currentMonth.month, day),
+            entries: dayEntries,
+            streakCount: getStreakCount(dayEntries),
             isCurrentMonth: true,
             dayOfWeek: (firstDay + day - 1) % 7
         });
@@ -67,9 +83,11 @@ export function useReadingLogWeeks(entries: GroupedReadingLogEntries, currentMon
     const remainingDays = 7 - week.days.length;
 
     for(let i = 0; i < remainingDays; i++) {
+        const dayEntries = getEntriesForDate(entries, currentMonth.year, currentMonth.month + 1, i + 1);
         week.days.push({
             date: i + 1,
-            entries: getEntriesForDate(entries, currentMonth.year, currentMonth.month + 1, i + 1),
+            entries: dayEntries,
+            streakCount: getStreakCount(dayEntries),
             isCurrentMonth: false,
             dayOfWeek: (firstDay + daysInMonth + i) % 7
         });
