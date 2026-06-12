@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import LogEntry from '@/components/LogReading/LogEntry.vue';
+import SelectTitle from '@/components/LogReading/SelectTitle.vue';
 import { logReading } from '@/routes';
 
-const props = defineProps<{
-    test: string;
-}>();
+// const props = defineProps<{
+//     test: string;
+// }>();
+
+const step = ref(1);
 
 defineOptions({
     layout: {
@@ -22,8 +27,12 @@ defineOptions({
     <Head title="Log Reading" />
 
     <div
-        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        class="p-4 border-b border-gray-200"
     >
-        Log Reading {{ props.test }}
+        <div class="text-left"><h1>Log Reading</h1></div>
     </div>
+
+    <SelectTitle v-if="step === 1" />
+
+    <LogEntry v-if="step === 2" />
 </template>
