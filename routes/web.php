@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ReadingLogController::class, 'index'])->name('dashboard');
     Route::get('/log-reading', [LogReadingController::class, 'index'])->name('log-reading');
     Route::get('/book-search', [LogReadingController::class, 'bookSearch'])->name('book-search');
+    Route::get('/book-cover', [LogReadingController::class, 'bookCover'])->name('book-cover');
 });
 
 require __DIR__.'/settings.php';

@@ -18,7 +18,15 @@
                     </PopoverTrigger>
                     <PopoverContent class="w-80">
                     <div class="grid p-2">
-                        {{ searchResults }}
+                        <div v-for="(result, resultIndex) in searchResults" :key="resultIndex">
+                            <div class="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                                <div class="flex-1 text-left">
+                                    <div><img :src="'/book-cover?id=' + result.cover_edition_key" alt="Book Cover"></div>
+                                    <div class="font-bold">{{ result.title }}</div>
+                                    <div class="text-sm text-gray-500">{{ result.author_name ? result.author_name.join(', ') : 'Unknown Author' }}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>                        
                     </PopoverContent>
                 </Popover>
@@ -41,6 +49,7 @@
 import { Pencil } from 'lucide-vue-next'
 import { ref } from 'vue';
 import Input from '@/components/ui/input/Input.vue';
+import type { BookSearchResult } from '@/types/reading-log';
 import Button from '../ui/button/Button.vue';
 import Popover from '../ui/popover/Popover.vue';
 import PopoverContent from '../ui/popover/PopoverContent.vue';
@@ -49,7 +58,7 @@ import PopoverTrigger from '../ui/popover/PopoverTrigger.vue';
 let searchTimeout: number;
 
 const searchQuery = ref('');
-const searchResults = ref('');
+const searchResults = ref<BookSearchResult[]>([]);
 const isPopoverOpen = ref(false);
 
 const search = () => {
@@ -59,14 +68,68 @@ const search = () => {
 
     searchTimeout = setTimeout(async () => {
         if(searchQuery.value.trim().length > 3) {
-            console.log('Searching for:', searchQuery.value);
             const response = await fetch('/book-search?q=' + encodeURIComponent(searchQuery.value));
             const data = await response.json();
 
-            searchResults.value = data.message;
+            searchResults.value = data.data.docs.map((doc: any) => ({
+                title: doc.title,
+                author_name: doc.author_name,
+                cover_edition_key: doc.cover_edition_key
+            }));
+
             isPopoverOpen.value = true;
-            console.log('Search results:', data);
         }
-    }, 250);
+    }, 500);
+
+    /*
+"data": {
+        "numFound": 12,
+        "start": 0,
+        "numFoundExact": true,
+        "num_found": 12,
+        "documentation_url": "https:\/\/openlibrary.org\/dev\/docs\/api\/search",
+        "q": "path of daggers",
+        "offset": null,
+        "docs": [
+            {
+                "author_key": [
+                    "OL233594A"
+                ],
+                "author_name": [
+                    "Robert Jordan"
+                ],
+                "cover_edition_key": "OL374119M",
+                "cover_i": 182462,
+                "ebook_access": "borrowable",
+                "edition_count": 32,
+                "first_publish_year": 1998,
+                "has_fulltext": true,
+                "ia": [
+                    "bizhidao0002qiao",
+                    "pathofdaggerswhe00robe",
+                    "pathofdaggers0000jord",
+                    "pathofdaggers00jord",
+                    "pathofdaggers00jord"
+                ],
+                "ia_collection": [
+                    "americana",
+                    "delawarecountydistrictlibrary",
+                    "inlibrary",
+                    "internetarchivebooks",
+                    "popularchinesebooks",
+                    "printdisabled"
+                ],
+                "key": "\/works\/OL1946687W",
+                "language": [
+                    "eng",
+                    "chi"
+                ],
+                "lending_edition_s": "OL28153817M",
+                "lending_identifier_s": "bizhidao0002qiao",
+                "public_scan_b": false,
+                "subtitle": "(The Wheel of Time, Book 8)",
+                "title": "The Path of Daggers"
+            },
+    */
 }
 </script>
