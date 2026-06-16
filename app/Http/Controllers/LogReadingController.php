@@ -19,7 +19,7 @@ class LogReadingController extends Controller
 
     public function bookSearch(Request $request): JsonResponse
     {
-        $url = env('OPEN_LIBRARY_API_URL').'?q='.urlencode($request->input('q'));
+        $url = env('OPEN_LIBRARY_API_URL').'?q='.urlencode($request->input('q')).'&limit=10';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
