@@ -7,10 +7,11 @@
                 <Popover :open="isPopoverOpen && searchResults.length > 0" @update:open="(val) => isPopoverOpen = val">
                     <PopoverTrigger as-child>
                         <div class="relative w-full max-w-md mx-auto mt-4">
+                            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                             <Input 
                                 type="text" 
                                 placeholder="Search by title or author..." 
-                                class="w-full bg-white pr-10"
+                                class="w-full bg-white pl-10 pr-10 md:text-lg"
                                 v-model="searchQuery"
                                 @input="search"
                             />
@@ -19,7 +20,7 @@
                     </PopoverTrigger>
                     <PopoverContent class="w-full max-w-md max-h-60 overflow-y-auto p-0">
                     <div class="grid p-0">
-                        <div v-for="(result, resultIndex) in searchResults" :key="resultIndex">
+                        <div v-for="(result, resultIndex) in searchResults" :key="resultIndex" @click="selectResult(result)">
                             <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
                                 <img :src="'/book-cover?id=' + result.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
                                 <div class="flex-1 min-w-0 text-left">
@@ -38,7 +39,7 @@
                 </Popover>
             </div>
             <div>
-                <Button class="btn mt-4 bg-orange-200 hover:bg-orange-100 border-orange-300" variant="outline">
+                <Button class="mt-4 text-lg text-gray-500 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300">
                     <Pencil />
                     Manually Enter Title
                 </Button>
@@ -52,7 +53,7 @@
 </template> 
 
 <script setup lang="ts">
-import { Pencil, Loader2 } from 'lucide-vue-next'
+import { Pencil, Loader2, Search } from 'lucide-vue-next'
 import { ref } from 'vue';
 import Input from '@/components/ui/input/Input.vue';
 import type { BookSearchResult } from '@/types/reading-log';
@@ -61,6 +62,10 @@ import Popover from '../ui/popover/Popover.vue';
 import PopoverContent from '../ui/popover/PopoverContent.vue';
 import PopoverTrigger from '../ui/popover/PopoverTrigger.vue';
 
+const emit = defineEmits<{
+    select: [book: BookSearchResult];
+}>();
+
 let searchTimeout: number;
 let abortController: AbortController | null = null;
 
@@ -68,6 +73,13 @@ const searchQuery = ref('');
 const searchResults = ref<BookSearchResult[]>([]);
 const isPopoverOpen = ref(false);
 const isSearching = ref(false);
+
+const selectResult = (book: BookSearchResult) => {
+    emit('select', book);
+    searchQuery.value = '';
+    searchResults.value = [];
+    isPopoverOpen.value = false;
+};
 
 const search = () => {
     if (searchTimeout) {
@@ -78,8 +90,8 @@ const search = () => {
 
     searchTimeout = setTimeout(async () => {
         if (searchQuery.value.trim().length <= 3) {
-return;
-}
+            return;
+        }
 
         abortController = new AbortController();
         const signal = abortController.signal;
@@ -91,76 +103,27 @@ return;
             const response = await fetch('/book-search?q=' + encodeURIComponent(searchQuery.value), { signal });
 
             if (!response.ok) {
-return;
-}
+                return;
+            }
 
             const data = await response.json();
 
             searchResults.value = data.data.docs.map((doc: any) => ({
                 title: doc.title,
                 author_name: doc.author_name,
-                cover_edition_key: doc.cover_edition_key
+                cover_edition_key: doc.cover_edition_key,
+                subtitle: doc?.subtitle,
+                olid: doc?.olid,
             }));
 
             isPopoverOpen.value = searchResults.value.length > 0;
         } catch (error) {
             if (error instanceof DOMException && error.name === 'AbortError') {
-return;
-}
+                return;
+            }
         } finally {
             isSearching.value = false;
         }
     }, 500);
-
-    /*
-"data": {
-        "numFound": 12,
-        "start": 0,
-        "numFoundExact": true,
-        "num_found": 12,
-        "documentation_url": "https:\/\/openlibrary.org\/dev\/docs\/api\/search",
-        "q": "path of daggers",
-        "offset": null,
-        "docs": [
-            {
-                "author_key": [
-                    "OL233594A"
-                ],
-                "author_name": [
-                    "Robert Jordan"
-                ],
-                "cover_edition_key": "OL374119M",
-                "cover_i": 182462,
-                "ebook_access": "borrowable",
-                "edition_count": 32,
-                "first_publish_year": 1998,
-                "has_fulltext": true,
-                "ia": [
-                    "bizhidao0002qiao",
-                    "pathofdaggerswhe00robe",
-                    "pathofdaggers0000jord",
-                    "pathofdaggers00jord",
-                    "pathofdaggers00jord"
-                ],
-                "ia_collection": [
-                    "americana",
-                    "delawarecountydistrictlibrary",
-                    "inlibrary",
-                    "internetarchivebooks",
-                    "popularchinesebooks",
-                    "printdisabled"
-                ],
-                "key": "\/works\/OL1946687W",
-                "language": [
-                    "eng",
-                    "chi"
-                ],
-                "lending_edition_s": "OL28153817M",
-                "lending_identifier_s": "bizhidao0002qiao",
-                "public_scan_b": false,
-                "subtitle": "(The Wheel of Time, Book 8)",
-                "title": "The Path of Daggers"
-            },
-    */
 }
 </script>

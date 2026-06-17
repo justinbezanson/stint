@@ -4,6 +4,9 @@ description: Vue 3 (Composition API), TypeScript, and Tailwind specialist for In
 model: google/gemini-2.5-flash
 mode: primary
 temperature: 0.2
+modalities:
+  input: ["text", "image"]
+  output: ["text"]
 tools:
   write: true
   edit: true

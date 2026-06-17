@@ -4,12 +4,15 @@ import { ref } from 'vue';
 import LogEntry from '@/components/LogReading/LogEntry.vue';
 import SelectTitle from '@/components/LogReading/SelectTitle.vue';
 import { logReading } from '@/routes';
+import type { BookSearchResult } from '@/types/reading-log';
 
-// const props = defineProps<{
-//     test: string;
-// }>();
+const step = ref(2);
+const selectedBook = ref<BookSearchResult | null>(null);
 
-const step = ref(1);
+const handleBookSelect = (book: BookSearchResult) => {
+    selectedBook.value = book;
+    step.value = 2;
+};
 
 defineOptions({
     layout: {
@@ -32,7 +35,7 @@ defineOptions({
         <div class="text-left"><h1>Log Reading</h1></div>
     </div>
 
-    <SelectTitle v-if="step === 1" />
+    <SelectTitle v-if="step === 1" @select="handleBookSelect" />
 
-    <LogEntry v-if="step === 2" />
+    <LogEntry v-if="step === 2" :book="selectedBook" />
 </template>

@@ -48,7 +48,9 @@ class LogReadingController extends Controller
 
     public function bookCover(Request $request)
     {
+        $size = $request->input('size') ?? 'S';
         $url = str_replace('{cover_edition_key}', $request->input('id'), env('OPEN_LIBRARY_COVER_URL'));
+        $url = str_replace('{cover_size}', $size, $url);
 
         return response()->stream(function () use ($url) {
             $stream = fopen($url, 'r');
