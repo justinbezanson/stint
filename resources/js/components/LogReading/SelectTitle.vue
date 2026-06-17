@@ -12,7 +12,7 @@
                                 placeholder="Search by title or author..." 
                                 class="w-full bg-white pr-10"
                                 v-model="searchQuery"
-                                @keyup="search"
+                                @input="search"
                             />
                             <Loader2 v-if="isSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-gray-400" />
                         </div>
@@ -62,6 +62,7 @@ import PopoverContent from '../ui/popover/PopoverContent.vue';
 import PopoverTrigger from '../ui/popover/PopoverTrigger.vue';
 
 let searchTimeout: number;
+let abortController: AbortController | null = null;
 
 const searchQuery = ref('');
 const searchResults = ref<BookSearchResult[]>([]);
@@ -73,14 +74,27 @@ const search = () => {
         clearTimeout(searchTimeout);
     }
 
-    searchTimeout = setTimeout(async () => {
-        if(searchQuery.value.trim().length > 3) {
-            searchResults.value = [];
-            isSearching.value = true;
-            const response = await fetch('/book-search?q=' + encodeURIComponent(searchQuery.value));
-            const data = await response.json();
+    abortController?.abort();
 
-            isSearching.value = false;
+    searchTimeout = setTimeout(async () => {
+        if (searchQuery.value.trim().length <= 3) {
+return;
+}
+
+        abortController = new AbortController();
+        const signal = abortController.signal;
+
+        searchResults.value = [];
+        isSearching.value = true;
+
+        try {
+            const response = await fetch('/book-search?q=' + encodeURIComponent(searchQuery.value), { signal });
+
+            if (!response.ok) {
+return;
+}
+
+            const data = await response.json();
 
             searchResults.value = data.data.docs.map((doc: any) => ({
                 title: doc.title,
@@ -88,7 +102,13 @@ const search = () => {
                 cover_edition_key: doc.cover_edition_key
             }));
 
-            isPopoverOpen.value = true;
+            isPopoverOpen.value = searchResults.value.length > 0;
+        } catch (error) {
+            if (error instanceof DOMException && error.name === 'AbortError') {
+return;
+}
+        } finally {
+            isSearching.value = false;
         }
     }, 500);
 
