@@ -63,7 +63,8 @@ export type DashboardProps = {
 export type BookSearchResult = {
     title: string;
     author_name?: string[];
+    author_key?: string[];
     cover_edition_key?: string;
     subtitle?: string;
-    olid?: string;
+    key?: string;
 }

@@ -6,7 +6,7 @@ import SelectTitle from '@/components/LogReading/SelectTitle.vue';
 import { logReading } from '@/routes';
 import type { BookSearchResult } from '@/types/reading-log';
 
-const step = ref(2);
+const step = ref(1);
 const selectedBook = ref<BookSearchResult | null>(null);
 
 const handleBookSelect = (book: BookSearchResult) => {

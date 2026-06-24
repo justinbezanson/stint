@@ -5,13 +5,24 @@
             <div class="w-2/5 rounded-xl bg-gray-100 text-left mr-4">
                 <div class="md:flex p-4">
                     <img 
-                        :src="'http://localhost:8000/book-cover?id=OL10738416M&size=M'" 
+                        :src="bookCoverSrc" 
                         alt="Book Cover"
-                        class="w-25 mx-auto md:mx-0"
+                        class="w-25 mx-auto md:mx-0 border border-gray-200"
                     >
-                    <div class="pl-4">
-                        <div class="font-bold">The Wheel Of Time</div>
-                        <div class="text-sm text-gray-500">Robert Jordan</div>
+                    <div v-if="props.book !== null" class="pl-4">
+                        <div class="font-bold">{{ props.book.title}}</div>
+                        <div v-if="props.book.subtitle" class="text-sm">{{ props.book.subtitle }}</div>
+                        <div class="text-sm text-gray-500">
+                            <span v-if="props.book.author_name">{{ props.book.author_name.join(', ') }}</span>
+                        </div>
+                    </div>
+                    <div v-else class="pl-4">
+                        <div>
+                            <Input class="md:text-lg bg-white mt-2" placeholder="Enter title" />
+                        </div>
+                        <div>
+                            <Input class="md:text-lg bg-white mt-2" placeholder="Enter author" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,19 +65,18 @@
                         <div class="font-bold">Time spent reading:</div>
                     </div>
                     <div class="w-1/4 flex justify-end">
-                        <Button variant="default" class="bg-rose-200 hover:bg-rose-300 text-lg text-rose-700 cursor-pointer">
-                            <Timer />
-                            Start Timer
-                        </Button>
+                        
                     </div>
                 </div>
 
                 <div class="flex gap-4 border-b border-gray-200 pb-6 mb-8"> 
                     <div class="w-3/4">
-                        <div>&nbsp;</div>
+                        <div>
+                            <Input class="md:text-lg bg-white mt-2" placeholder="Type &quot;1h&quot;, &quot;30m&quot;, or &quot;1h30m&quot;" />
+                        </div>
                     </div>
                     <div class="w-1/4">
-                        <div>Some data here</div>
+                        
                     </div>
                 </div>
 
@@ -89,8 +99,8 @@
 <script setup lang="ts">
 import { DateFormatter, getLocalTimeZone, today  } from '@internationalized/date'
 import type {CalendarDate} from '@internationalized/date';
-import { Timer, CalendarIcon } from 'lucide-vue-next'
-import { ref } from 'vue';
+import { CalendarIcon } from 'lucide-vue-next'
+import { computed, ref } from 'vue';
 import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
@@ -100,10 +110,19 @@ import {
 import { cn } from '@/lib/utils'
 import type { BookSearchResult } from '@/types/reading-log';
 import Button from '../ui/button/Button.vue';
+import Input from '../ui/input/Input.vue';
 
-defineProps<{
+const props = defineProps<{
     book: BookSearchResult | null;
 }>();
+
+const bookCoverSrc = computed(() => {
+    if(!props.book || props.book === null) {
+return '';
+}
+
+    return `/book-cover?id=${props.book?.cover_edition_key}&size=M`
+})
 
 const date = ref<CalendarDate>()
 const formatter = new DateFormatter('en-US', { dateStyle: 'full' })

@@ -39,7 +39,10 @@
                 </Popover>
             </div>
             <div>
-                <Button class="mt-4 text-lg text-gray-500 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300">
+                <Button 
+                    @click="manuallyEnterTitle" 
+                    class="mt-4 text-lg text-gray-500 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300"
+                >
                     <Pencil />
                     Manually Enter Title
                 </Button>
@@ -63,7 +66,7 @@ import PopoverContent from '../ui/popover/PopoverContent.vue';
 import PopoverTrigger from '../ui/popover/PopoverTrigger.vue';
 
 const emit = defineEmits<{
-    select: [book: BookSearchResult];
+    select: [book: BookSearchResult|null];
 }>();
 
 let searchTimeout: number;
@@ -75,7 +78,15 @@ const isPopoverOpen = ref(false);
 const isSearching = ref(false);
 
 const selectResult = (book: BookSearchResult) => {
+    console.log(book);
     emit('select', book);
+    searchQuery.value = '';
+    searchResults.value = [];
+    isPopoverOpen.value = false;
+};
+
+const manuallyEnterTitle = () => {
+    emit('select', null);
     searchQuery.value = '';
     searchResults.value = [];
     isPopoverOpen.value = false;
