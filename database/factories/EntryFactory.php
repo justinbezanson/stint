@@ -23,6 +23,7 @@ class EntryFactory extends Factory
             'user_id' => 1,
             'log_date' => fake()->dateTimeBetween('-30 days', 'now'),
             'duration' => fake()->numberBetween(10, 120),
+            'completed' => fake()->boolean(),
         ];
     }
 }
