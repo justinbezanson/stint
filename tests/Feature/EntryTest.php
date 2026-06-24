@@ -424,3 +424,20 @@ it('handles duplicate dates for longest streak', function () {
 
     expect($streak)->toBe(2);
 });
+
+it('defaults completed to false', function () {
+    $entry = Entry::factory()->create([
+        'user_id' => $this->user->id,
+    ]);
+
+    expect($entry->fresh()->completed)->toBeFalse();
+});
+
+it('can mark an entry as completed', function () {
+    $entry = Entry::factory()->create([
+        'user_id' => $this->user->id,
+        'completed' => true,
+    ]);
+
+    expect($entry->completed)->toBeTrue();
+});
