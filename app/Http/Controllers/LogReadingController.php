@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateEntryAction;
+use App\Http\Requests\CreateEntryRequest;
 use App\Models\Entry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Response;
 
 class LogReadingController extends Controller
@@ -18,20 +21,14 @@ class LogReadingController extends Controller
         ]);
     }
 
-    public function createEntry(Request $request): Response
+    public function createEntry(CreateEntryRequest $request, CreateEntryAction $action)
     {
-        // $entry = Entry::create([
-        //     'user_id' => $request->user()->id,
-        //     'book_id' => $request->input('book_id'),
-        //     'book_title' => $request->input('book_title'),
-        //     'book_author' => $request->input('book_author'),
-        //     'book_cover' => $request->input('book_cover'),
-        //     'logDate' => $request->input('log_date'),
-        //     'duration' => $request->input('duration'),
-        // ]);
+        Gate::authorize('create', Entry::class);
+
+        $action->execute($request->user(), $request->validated());
 
         return inertia('LogReading', [
-            // 'entry' => $entry,
+
         ]);
     }
 

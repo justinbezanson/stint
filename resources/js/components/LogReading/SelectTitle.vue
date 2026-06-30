@@ -78,7 +78,6 @@ const isPopoverOpen = ref(false);
 const isSearching = ref(false);
 
 const selectResult = (book: BookSearchResult) => {
-    console.log(book);
     emit('select', book);
     searchQuery.value = '';
     searchResults.value = [];

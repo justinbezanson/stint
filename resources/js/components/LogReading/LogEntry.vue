@@ -18,10 +18,10 @@
                     </div>
                     <div v-else class="pl-4">
                         <div>
-                            <Input v-model="manualBookTitle" class="md:text-lg bg-white mt-2" placeholder="Enter title" />
+                            <Input v-model="form.title" class="md:text-lg bg-white mt-2" placeholder="Enter title" />
                         </div>
                         <div>
-                            <Input v-model="manualBookAuthor" class="md:text-lg bg-white mt-2" placeholder="Enter author" />
+                            <Input v-model="form.author" class="md:text-lg bg-white mt-2" placeholder="Enter author" />
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,6 @@
                                     :initial-focus="true"
                                     :default-placeholder="defaultPlaceholder"
                                     layout="month-and-year"
-                                    @update:model-value="handleDateChange"
                                 />
                                 </PopoverContent>
                             </Popover>
@@ -74,7 +73,7 @@
                     <div class="w-3/4">
                         <div>
                             <Input 
-                                v-model="duration" 
+                                v-model="form.duration" 
                                 class="md:text-lg bg-white mt-2" 
                                 placeholder="Type &quot;1h&quot;, &quot;30m&quot;, or &quot;1h30m&quot;" 
                             />
@@ -94,6 +93,7 @@
                             variant="default" 
                             class="bg-rose-500 hover:bg-rose-700 text-lg cursor-pointer"
                             @click="logReading"
+                            :disabled="!selectedDate || !form.duration || logReadingDisabled"
                         >
                             Log Reading
                         </Button>
@@ -122,79 +122,58 @@ import type { BookSearchResult } from '@/types/reading-log';
 import Button from '../ui/button/Button.vue';
 import Input from '../ui/input/Input.vue';
 
+const emit = defineEmits<{
+    saved: []
+}>();
+
 const props = defineProps<{
     book: BookSearchResult | null;
 }>();
-
-const bookCoverSrc = computed(() => {
-    if(!props.book || props.book === null) {
-return '';
-}
-
-    return `/book-cover?id=${props.book?.cover_edition_key}&size=M`
-})
-
-/**
- * Return the selected date in YYYY-MM-DD format
- */
-const selectedDate = computed(() => {
-    return date.value.toDate(getLocalTimeZone()).toISOString().split('T')[0]
-})
-
-const bookTitle = computed(() => {
-    if(!props.book || props.book === null) {
-        return manualBookTitle.value;
-    }
-
-    return props.book?.title;
-})
-
-const bookSubtitle = computed(() => {
-    return props.book?.subtitle
-})
-
-const author = computed(() => {
-    if(!props.book || props.book === null) {
-        return manualBookAuthor.value;
-    }
-
-    if(props.book.author_name) {
-        return props.book.author_name.join(', ');
-    }
-
-    return 'Unknown Author';
-})
-
-const cover = computed(() => {
-    if(props.book && props.book.cover_edition_key) {
-        return props.book.cover_edition_key;
-    }
-
-    return null;
-})
 
 const t = new Date();
 const date = ref<CalendarDate>(new CalendarDate(t.getFullYear(), t.getMonth() + 1, t.getDate()));
 const formatter = new DateFormatter('en-US', { dateStyle: 'full' })
 const defaultPlaceholder = today(getLocalTimeZone())
-const duration = ref('');
-const manualBookTitle = ref('');
-const manualBookAuthor = ref('');
+const logReadingDisabled = ref(false);
+
+const selectedDate = computed(() => {
+    return date.value.toDate(getLocalTimeZone()).toISOString().split('T')[0]
+})
+
+const bookCoverSrc = computed(() => {
+    if (! props.book || props.book === null) {
+        return '';
+    }
+
+    return `/book-cover?id=${props.book?.cover_edition_key}&size=M`
+})
 
 const form = useForm({
     logDate: selectedDate.value,
-    duration: duration.value,
-    title: bookTitle.value,
-    subtitle: bookSubtitle.value,
-    author: author.value,
-    cover_edition_key: cover.value,
+    duration: '',
+    title: props.book?.title ?? '',
+    subtitle: props.book?.subtitle ?? '',
+    author: props.book?.author_name?.join(', ') ?? '',
+    cover_edition_key: props.book?.cover_edition_key ?? null,
     book_id: props.book !== null ? props.book.key : '',
 })
 
 const logReading = () => {
+    form.logDate = selectedDate.value;
+
+    logReadingDisabled.value = true;
     form.post('/create-entry', {
         onSuccess: () => {
             form.reset();
+            emit('saved');
+        },
+
+        onError: () => {
+            console.log('error');
+        },
+
+        onFinish: () => {
+            logReadingDisabled.value = false;
         }
     })
 }
