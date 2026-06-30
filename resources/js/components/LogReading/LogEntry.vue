@@ -18,10 +18,10 @@
                     </div>
                     <div v-else class="pl-4">
                         <div>
-                            <Input class="md:text-lg bg-white mt-2" placeholder="Enter title" />
+                            <Input v-model="manualBookTitle" class="md:text-lg bg-white mt-2" placeholder="Enter title" />
                         </div>
                         <div>
-                            <Input class="md:text-lg bg-white mt-2" placeholder="Enter author" />
+                            <Input v-model="manualBookAuthor" class="md:text-lg bg-white mt-2" placeholder="Enter author" />
                         </div>
                     </div>
                 </div>
@@ -53,6 +53,7 @@
                                     :initial-focus="true"
                                     :default-placeholder="defaultPlaceholder"
                                     layout="month-and-year"
+                                    @update:model-value="handleDateChange"
                                 />
                                 </PopoverContent>
                             </Popover>
@@ -72,7 +73,11 @@
                 <div class="flex gap-4 border-b border-gray-200 pb-6 mb-8"> 
                     <div class="w-3/4">
                         <div>
-                            <Input class="md:text-lg bg-white mt-2" placeholder="Type &quot;1h&quot;, &quot;30m&quot;, or &quot;1h30m&quot;" />
+                            <Input 
+                                v-model="duration" 
+                                class="md:text-lg bg-white mt-2" 
+                                placeholder="Type &quot;1h&quot;, &quot;30m&quot;, or &quot;1h30m&quot;" 
+                            />
                         </div>
                     </div>
                     <div class="w-1/4">
@@ -85,7 +90,11 @@
                         <div>&nbsp;</div>
                     </div>
                     <div class="w-1/4 flex justify-end">
-                        <Button variant="default" class="bg-rose-500 hover:bg-rose-700 text-lg cursor-pointer">
+                        <Button 
+                            variant="default" 
+                            class="bg-rose-500 hover:bg-rose-700 text-lg cursor-pointer"
+                            @click="logReading"
+                        >
                             Log Reading
                         </Button>
                     </div>
@@ -97,8 +106,9 @@
 </template>
 
 <script setup lang="ts">
+import { useForm } from '@inertiajs/vue3';
 import { DateFormatter, getLocalTimeZone, today  } from '@internationalized/date'
-import type {CalendarDate} from '@internationalized/date';
+import { CalendarDate } from '@internationalized/date';
 import { CalendarIcon } from 'lucide-vue-next'
 import { computed, ref } from 'vue';
 import { Calendar } from '@/components/ui/calendar'
@@ -124,7 +134,68 @@ return '';
     return `/book-cover?id=${props.book?.cover_edition_key}&size=M`
 })
 
-const date = ref<CalendarDate>()
+/**
+ * Return the selected date in YYYY-MM-DD format
+ */
+const selectedDate = computed(() => {
+    return date.value.toDate(getLocalTimeZone()).toISOString().split('T')[0]
+})
+
+const bookTitle = computed(() => {
+    if(!props.book || props.book === null) {
+        return manualBookTitle.value;
+    }
+
+    return props.book?.title;
+})
+
+const bookSubtitle = computed(() => {
+    return props.book?.subtitle
+})
+
+const author = computed(() => {
+    if(!props.book || props.book === null) {
+        return manualBookAuthor.value;
+    }
+
+    if(props.book.author_name) {
+        return props.book.author_name.join(', ');
+    }
+
+    return 'Unknown Author';
+})
+
+const cover = computed(() => {
+    if(props.book && props.book.cover_edition_key) {
+        return props.book.cover_edition_key;
+    }
+
+    return null;
+})
+
+const t = new Date();
+const date = ref<CalendarDate>(new CalendarDate(t.getFullYear(), t.getMonth() + 1, t.getDate()));
 const formatter = new DateFormatter('en-US', { dateStyle: 'full' })
 const defaultPlaceholder = today(getLocalTimeZone())
+const duration = ref('');
+const manualBookTitle = ref('');
+const manualBookAuthor = ref('');
+
+const form = useForm({
+    logDate: selectedDate.value,
+    duration: duration.value,
+    title: bookTitle.value,
+    subtitle: bookSubtitle.value,
+    author: author.value,
+    cover_edition_key: cover.value,
+    book_id: props.book !== null ? props.book.key : '',
+})
+
+const logReading = () => {
+    form.post('/create-entry', {
+        onSuccess: () => {
+            form.reset();
+        }
+    })
+}
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Entry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -14,6 +15,23 @@ class LogReadingController extends Controller
 
         return inertia('LogReading', [
             'test' => 'Hello, world!',
+        ]);
+    }
+
+    public function createEntry(Request $request): Response
+    {
+        // $entry = Entry::create([
+        //     'user_id' => $request->user()->id,
+        //     'book_id' => $request->input('book_id'),
+        //     'book_title' => $request->input('book_title'),
+        //     'book_author' => $request->input('book_author'),
+        //     'book_cover' => $request->input('book_cover'),
+        //     'logDate' => $request->input('log_date'),
+        //     'duration' => $request->input('duration'),
+        // ]);
+
+        return inertia('LogReading', [
+            // 'entry' => $entry,
         ]);
     }
 
