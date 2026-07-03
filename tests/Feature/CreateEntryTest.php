@@ -17,7 +17,6 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Test Book',
             'author' => 'Test Author',
-            'book_id' => '',
         ]);
 
         expect($entry->duration)->toBe(120);
@@ -31,7 +30,6 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Test Book',
             'author' => 'Test Author',
-            'book_id' => '',
         ]);
 
         expect($entry->duration)->toBe(45);
@@ -45,7 +43,6 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Test Book',
             'author' => 'Test Author',
-            'book_id' => '',
         ]);
 
         expect($entry->duration)->toBe(90);
@@ -58,7 +55,6 @@ describe('CreateEntryAction', function () {
             'duration' => '30m',
             'logDate' => '2026-06-30',
             'title' => 'Test Book',
-            'book_id' => '',
         ]);
 
         expect($entry->book->author->name)->toBe('Unknown Author');
@@ -73,13 +69,12 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Pride and Prejudice',
             'author' => 'Jane Austen',
-            'book_id' => '',
         ]);
 
         expect(Author::where('name', 'Jane Austen')->count())->toBe(1);
     });
 
-    it('reuses existing book by olid', function () {
+    it('reuses existing book by id', function () {
         $action = new CreateEntryAction;
         $user = User::factory()->create();
 
@@ -88,7 +83,7 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Existing Book',
             'author' => 'Some Author',
-            'book_id' => 'OL123W',
+            'book_id' => 1,
         ]);
 
         $action->execute($user, [
@@ -96,10 +91,10 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Existing Book',
             'author' => 'Some Author',
-            'book_id' => 'OL123W',
+            'book_id' => 1,
         ]);
 
-        expect(Book::where('olid', 'OL123W')->count())->toBe(1);
+        expect(Book::where('id', 1)->count())->toBe(1);
         expect(Entry::count())->toBe(2);
     });
 
@@ -112,7 +107,6 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'Same Book',
             'author' => 'Same Author',
-            'book_id' => '',
         ]);
 
         $action->execute($user, [
@@ -120,14 +114,13 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-07-01',
             'title' => 'Same Book',
             'author' => 'Same Author',
-            'book_id' => '',
         ]);
 
         expect(Book::where('title', 'Same Book')->count())->toBe(1);
         expect(Entry::count())->toBe(2);
     });
 
-    it('stores olid on book when provided', function () {
+    it('stores id on book when provided', function () {
         $action = new CreateEntryAction;
 
         $entry = $action->execute(User::factory()->create(), [
@@ -135,10 +128,10 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-06-30',
             'title' => 'OL Book',
             'author' => 'OL Author',
-            'book_id' => '/works/OL456W',
+            'book_id' => 1,
         ]);
 
-        expect($entry->book->olid)->toBe('/works/OL456W');
+        expect($entry->book->id)->toBe(1);
     });
 
     it('creates entry with correct user and date', function () {
@@ -150,7 +143,6 @@ describe('CreateEntryAction', function () {
             'logDate' => '2026-07-04',
             'title' => 'Fireworks',
             'author' => 'Independence Author',
-            'book_id' => '',
         ]);
 
         expect($entry->user_id)->toBe($user->id);
@@ -197,7 +189,6 @@ describe('POST /create-entry', function () {
                 'duration' => '30m',
                 'logDate' => '2026-06-30',
                 'author' => 'An Author',
-                'book_id' => '',
             ])
             ->assertSessionHasErrors('title');
     });
@@ -210,7 +201,6 @@ describe('POST /create-entry', function () {
                 'duration' => '30m',
                 'logDate' => '2026-06-30',
                 'title' => 'A Book',
-                'book_id' => '',
             ])
             ->assertSessionHasErrors('author');
     });
@@ -222,7 +212,7 @@ describe('POST /create-entry', function () {
             ->post(route('create-entry'), [
                 'duration' => '30m',
                 'logDate' => '2026-06-30',
-                'book_id' => '/works/OL123W',
+                'book_id' => 1,
             ])
             ->assertSessionDoesntHaveErrors(['title', 'author']);
     });
@@ -235,7 +225,6 @@ describe('POST /create-entry', function () {
             'logDate' => '2026-06-30',
             'title' => 'Manual Book',
             'author' => 'Manual Author',
-            'book_id' => '',
         ]);
 
         expect(Entry::count())->toBe(1);
@@ -251,13 +240,13 @@ describe('POST /create-entry', function () {
             'logDate' => '2026-06-30',
             'title' => 'OL Book',
             'author' => 'OL Author',
-            'book_id' => '/works/OL789W',
+            'book_id' => 1,
             'subtitle' => 'A Subtitle',
             'cover_edition_key' => 'OL123M',
         ]);
 
         expect(Entry::count())->toBe(1);
-        expect(Entry::first()->book->olid)->toBe('/works/OL789W');
+        expect(Entry::first()->book->id)->toBe(1);
         expect(Entry::first()->book->author->name)->toBe('OL Author');
     });
 
@@ -270,7 +259,6 @@ describe('POST /create-entry', function () {
                 'logDate' => '2026-06-30',
                 'title' => 'Inertia Book',
                 'author' => 'Inertia Author',
-                'book_id' => '',
             ])
             ->assertOk()
             ->assertInertia(fn ($page) => $page->component('LogReading'));

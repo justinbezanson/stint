@@ -26,7 +26,7 @@ class CreateEntryAction
         $book = null;
 
         if (! empty($data['book_id'])) {
-            $book = Book::where('olid', $data['book_id'])->first();
+            $book = Book::where('id', $data['book_id'])->first();
         }
 
         if (! $book) {
@@ -40,8 +40,8 @@ class CreateEntryAction
             $book->title = $data['title'];
             $book->author_id = $author->id;
 
-            if (! empty($data['book_id'])) {
-                $book->olid = $data['book_id'];
+            if (! empty($data['cover_edition_key'])) {
+                $book->olid = $data['cover_edition_key'];
             }
 
             $book->save();

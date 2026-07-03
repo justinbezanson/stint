@@ -49,8 +49,25 @@
             </div>
         </div>
 
-        <div class="rounded-xl p-4 bg-gray-50 mt-8">
-            x
+        <div class="rounded-xl p-4 bg-gray-50 mt-8" v-if="props.recentBooks.length > 0">
+            <div class="text-left font-bold mb-2">Recently Logged Books</div>
+            <div class="grid gap-2">
+                <div v-for="(book, index) in props.recentBooks" :key="index" @click="selectResult(book)">
+                    <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                        <img :src="'/book-cover?id=' + book.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
+                        <div class="flex-1 min-w-0 text-left">
+                            <div class="font-bold truncate">
+                                {{ book.title }}
+                                <template v-if="book.subtitle">
+                                    ({{ book.subtitle }})
+                                </template>
+                            </div>
+                            <div class="text-sm text-gray-500 truncate">{{ book.author_name ? book.author_name.join(', ') : 'Unknown Author' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </template> 
@@ -65,6 +82,12 @@ import Popover from '../ui/popover/Popover.vue';
 import PopoverContent from '../ui/popover/PopoverContent.vue';
 import PopoverTrigger from '../ui/popover/PopoverTrigger.vue';
 
+const props = defineProps<{
+    recentBooks: BookSearchResult[];
+}>();
+
+console.log('recentBooks:', props.recentBooks);
+
 const emit = defineEmits<{
     select: [book: BookSearchResult|null];
 }>();
@@ -78,6 +101,7 @@ const isPopoverOpen = ref(false);
 const isSearching = ref(false);
 
 const selectResult = (book: BookSearchResult) => {
+    console.log('Selected book:', book);
     emit('select', book);
     searchQuery.value = '';
     searchResults.value = [];

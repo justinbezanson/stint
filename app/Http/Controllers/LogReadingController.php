@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\CreateEntryAction;
 use App\Http\Requests\CreateEntryRequest;
 use App\Models\Entry;
+use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -14,10 +15,28 @@ class LogReadingController extends Controller
 {
     public function index(Request $request): Response
     {
-        // TODO: get recent books read
+        $recentBooks = Book::select('books.*')
+            ->join('entries', 'books.id', '=', 'entries.book_id')
+            ->where('entries.user_id', $request->user()->id)
+            ->where('entries.log_date', '>=', now()->subDays(30))
+            ->groupBy('books.id')
+            ->orderByRaw('MAX(entries.log_date) DESC')
+            ->limit(5)
+            ->with('author')
+            ->get();
+
+        $recentBooks = $recentBooks->map(function ($book) {
+            return [
+                'key' => $book->id,
+                'title' => $book->title,
+                'author_name' => explode(', ', $book->author->name),
+                'cover_edition_key' => $book->olid,
+                'author_key' => $book->author->id,
+            ];
+        });
 
         return inertia('LogReading', [
-            'test' => 'Hello, world!',
+            'recentBooks' => $recentBooks,
         ]);
     }
 

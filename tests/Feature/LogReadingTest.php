@@ -15,6 +15,6 @@ test('authenticated users can visit the log reading page', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('LogReading')
-            ->where('test', 'Hello, world!'),
+            ->has('recentBooks'),
         );
 });

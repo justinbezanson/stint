@@ -20,7 +20,7 @@ class CreateEntryRequest extends FormRequest
         $rules = [
             'duration' => 'required|string',
             'logDate' => 'required|date',
-            'book_id' => 'nullable|string',
+            'book_id' => 'nullable|integer',
             'subtitle' => 'nullable|string|max:255',
             'cover_edition_key' => 'nullable|string',
         ];

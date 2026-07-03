@@ -54,15 +54,15 @@ const props = defineProps<{
 
 const isStreakStart = computed(() => {
     const dayHasEntries = props.day.entries.length > 0;
-    const previousDay = props.dayIndex === 0 ? props.previousWeek.days[6] : props.previousDay;
-    const previousDayHasEntries = previousDay.entries.length > 0;
+    const previousDay = props.dayIndex === 0 ? props.previousWeek?.days?.[6] : props.previousDay;
+    const previousDayHasEntries = previousDay?.entries.length > 0;
 
     return dayHasEntries && !previousDayHasEntries;
 });
 
 const isStreakEnd = computed(() => {
     const dayHasEntries = props.day.entries.length > 0;
-    const nextDay = props.dayIndex === 6 ? props.nextWeek.days[0] : props.nextDay;
+    const nextDay = props.dayIndex === 6 ? props.nextWeek?.days?.[0] : props.nextDay;
     const nextDayHasEntries = nextDay?.entries.length > 0;
 
     return dayHasEntries && !nextDayHasEntries;

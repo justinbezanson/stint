@@ -8,6 +8,10 @@ import SelectTitle from '@/components/LogReading/SelectTitle.vue';
 import { logReading } from '@/routes';
 import type { BookSearchResult } from '@/types/reading-log';
 
+const props = defineProps<{
+    recentBooks: BookSearchResult[];
+}>();
+
 const step = ref(1);
 const selectedBook = ref<BookSearchResult | null>(null);
 
@@ -46,7 +50,7 @@ defineOptions({
         <div class="text-left"><h1>Log Reading</h1></div>
     </div>
 
-    <SelectTitle v-if="step === 1" @select="handleBookSelect" />
+    <SelectTitle v-if="step === 1" @select="handleBookSelect" :recent-books="props.recentBooks" />
 
     <LogEntry v-if="step === 2" :book="selectedBook" @saved="handleEntrySaved" />
 
