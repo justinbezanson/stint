@@ -4,11 +4,12 @@
         <div class="flex">
             <div class="w-2/5 rounded-xl bg-gray-100 text-left mr-4">
                 <div class="md:flex p-4">
-                    <img 
+                    <img v-if="props.book?.cover_edition_key"
                         :src="bookCoverSrc" 
                         alt="Book Cover"
                         class="w-25 mx-auto md:mx-0 border border-gray-200"
                     >
+                    <div v-else class="w-25 mx-auto md:mx-0 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600 aspect-[2/3]">{{ props.book?.title }}</div>
                     <div v-if="props.book !== null" class="pl-4">
                         <div class="font-bold">{{ props.book.title}}</div>
                         <div v-if="props.book.subtitle" class="text-sm">{{ props.book.subtitle }}</div>

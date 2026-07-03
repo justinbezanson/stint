@@ -22,7 +22,8 @@
                     <div class="grid p-0">
                         <div v-for="(result, resultIndex) in searchResults" :key="resultIndex" @click="selectResult(result)">
                             <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
-                                <img :src="'/book-cover?id=' + result.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
+                                <img v-if="result.cover_edition_key" :src="'/book-cover?id=' + result.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
+                                <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600">{{ result.title }}</div>
                                 <div class="flex-1 min-w-0 text-left">
                                     <div class="font-bold truncate">
                                         {{ result.title }}
@@ -54,7 +55,8 @@
             <div class="grid gap-2">
                 <div v-for="(book, index) in props.recentBooks" :key="index" @click="selectResult(book)">
                     <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
-                        <img :src="'/book-cover?id=' + book.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
+                        <img v-if="book.cover_edition_key" :src="'/book-cover?id=' + book.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
+                        <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600">{{ book.title }}</div>
                         <div class="flex-1 min-w-0 text-left">
                             <div class="font-bold truncate">
                                 {{ book.title }}
