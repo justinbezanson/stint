@@ -45,7 +45,7 @@ defineOptions({
     <Head title="Log Reading" />
 
     <div
-        class="p-4 border-b border-gray-200"
+        class="p-4 border-b border-gray-200 dark:border-neutral-700"
     >
         <div class="text-left"><h1>Log Reading</h1></div>
     </div>

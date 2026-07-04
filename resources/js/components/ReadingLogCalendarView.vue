@@ -21,7 +21,7 @@
                                 class="p-2 font-bold"
                                 :class="{ 
                                     
-                                    'text-gray-400': !day.isCurrentMonth,
+                                    'text-gray-400 dark:text-neutral-600': !day.isCurrentMonth,
                                 }"
                             >
                                 {{ day.date }}
@@ -44,7 +44,7 @@
                                 <div 
                                     v-for="entry in day.entries" 
                                     :key="entry.bookTitle + entry.duration"
-                                    class="mb-2 ml-2 mr-2 rounded-md bg-sky-100 p-2 min-w-0 break-words border-l-6 border-l-sky-600 text-sky-600"
+                                    class="mb-2 ml-2 mr-2 rounded-md bg-sky-100 dark:bg-sky-950/50 p-2 min-w-0 break-words border-l-6 border-l-sky-600 dark:border-l-sky-400 text-sky-600 dark:text-sky-400"
                                 >
                                     <div class="font-bold">{{ entry.bookTitle }}</div>
                                     <div class="text-sm">{{ entry.bookAuthor }}</div>

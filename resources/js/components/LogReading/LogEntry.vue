@@ -2,34 +2,34 @@
     <div class="text-center w-full px-2 md:w-3/4 mx-auto">
         <h2 class="my-4">Log Your Reading</h2>
         <div class="flex">
-            <div class="w-2/5 rounded-xl bg-gray-100 text-left mr-4">
+            <div class="w-2/5 rounded-xl bg-gray-100 dark:bg-neutral-800 text-left mr-4">
                 <div class="md:flex p-4">
                     <img v-if="props.book?.cover_edition_key"
                         :src="bookCoverSrc" 
                         alt="Book Cover"
-                        class="w-25 mx-auto md:mx-0 border border-gray-200"
+                        class="w-25 mx-auto md:mx-0 border border-gray-200 dark:border-neutral-700"
                     >
-                    <div v-else class="w-25 mx-auto md:mx-0 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600 aspect-[2/3]">{{ props.book?.title }}</div>
+                    <div v-else class="w-25 mx-auto md:mx-0 rounded shrink-0 flex items-center justify-center bg-gray-200 dark:bg-neutral-700 text-[10px] leading-tight text-center p-1 text-gray-600 dark:text-neutral-400 aspect-[2/3]">{{ props.book?.title }}</div>
                     <div v-if="props.book !== null" class="pl-4">
                         <div class="font-bold">{{ props.book.title}}</div>
                         <div v-if="props.book.subtitle" class="text-sm">{{ props.book.subtitle }}</div>
-                        <div class="text-sm text-gray-500">
+                        <div class="text-sm text-gray-500 dark:text-neutral-400">
                             <span v-if="props.book.author_name">{{ props.book.author_name.join(', ') }}</span>
                         </div>
                     </div>
                     <div v-else class="pl-4">
                         <div>
-                            <Input v-model="form.title" class="md:text-lg bg-white mt-2" placeholder="Enter title" />
+                            <Input v-model="form.title" class="md:text-lg bg-white dark:bg-neutral-950 mt-2" placeholder="Enter title" />
                         </div>
                         <div>
-                            <Input v-model="form.author" class="md:text-lg bg-white mt-2" placeholder="Enter author" />
+                            <Input v-model="form.author" class="md:text-lg bg-white dark:bg-neutral-950 mt-2" placeholder="Enter author" />
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="w-3/5 rounded-xl bg-gray-100 p-4 text-left">
-                <div class="flex gap-4 border-b border-gray-200 pb-6 mb-8"> 
+            <div class="w-3/5 rounded-xl bg-gray-100 dark:bg-neutral-800 p-4 text-left">
+                <div class="flex gap-4 border-b border-gray-200 dark:border-neutral-700 pb-6 mb-8"> 
                     <div class="w-3/4">
                         <div class="font-bold">Log reading for:</div>
                     </div>
@@ -70,12 +70,12 @@
                     </div>
                 </div>
 
-                <div class="flex gap-4 border-b border-gray-200 pb-6 mb-8"> 
+                <div class="flex gap-4 border-b border-gray-200 dark:border-neutral-700 pb-6 mb-8"> 
                     <div class="w-3/4">
                         <div>
                             <Input 
                                 v-model="form.duration" 
-                                class="md:text-lg bg-white mt-2" 
+                                class="md:text-lg bg-white dark:bg-neutral-950 mt-2" 
                                 placeholder="Type &quot;1h&quot;, &quot;30m&quot;, or &quot;1h30m&quot;" 
                             />
                         </div>

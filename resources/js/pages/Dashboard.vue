@@ -89,7 +89,7 @@ const updateEntires = (currentMonth: ReadingLogMonth) => {
     <div
         class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
     >
-        <div class="grid grid-cols-2 gap-4 border-b-1 border-gray-200 pb-4">
+        <div class="grid grid-cols-2 gap-4 border-b-1 border-gray-200 dark:border-neutral-700 pb-4">
             <div class="text-left"><h1>Reading Log</h1></div>
             <div class="text-right">
                 <Button class="btn" variant="outline">Print</Button>
@@ -100,22 +100,22 @@ const updateEntires = (currentMonth: ReadingLogMonth) => {
                     :value-right="'list'"
                     :icon-left="CalendarDays"
                     :icon-right="List"
-                    class="switch-log-view float-right ml-2 text-gray-500"
+                    class="switch-log-view float-right ml-2 text-gray-500 dark:text-neutral-400"
                 />
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 font-bold text-xl">
-            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-red-100">
-                <Flame :size="36" class="text-amber-500" />
+            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-red-100 dark:bg-red-950/40">
+                <Flame :size="36" class="text-amber-500 dark:text-amber-400" />
                 <div>
                     <div v-if="props.currentStreak === 1">{{ props.currentStreak }} Day</div>
                     <div v-else>{{ props.currentStreak }} Days</div>
                     <div class="font-normal text-sm">Current Streak</div>
                 </div>
             </div>  
-            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-amber-100">
-                <Flame :size="36" class="text-amber-500" />
+            <div class="flex items-center gap-2 m-2 p-8 rounded-xl bg-amber-100 dark:bg-amber-950/40">
+                <Flame :size="36" class="text-amber-500 dark:text-amber-400" />
                 <div>
                     <div v-if="props.longestStreak === 1">{{ props.longestStreak }} Day</div>
                     <div v-else>{{ props.longestStreak }} Days</div>

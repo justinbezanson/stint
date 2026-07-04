@@ -1,21 +1,21 @@
 <template>
     <div>
         <div v-for="(week, weekIndex) in weekRows" :key="week.week" class="">
-            <div class="p-2 border-t border-b border-gray-200">{{  weekRange(week, weekIndex) }}</div>
+            <div class="p-2 border-t border-b border-gray-200 dark:border-neutral-700">{{  weekRange(week, weekIndex) }}</div>
 
             <div v-for="day in week.days.slice().sort((a, b) => b.dayOfWeek - a.dayOfWeek)" :key="`${weekIndex}-${day.date}`" class="p-2">
                 <div class="grid grid-cols-[150px_1fr] w-full pt-2">
                     <div class="">
                         <div class="text-xl font-bold">{{ day.date }}</div>
-                        <div class="text-gray-500">{{ dayNames[day.dayOfWeek] }}</div>
+                        <div class="text-gray-500 dark:text-neutral-400">{{ dayNames[day.dayOfWeek] }}</div>
                         <div>
                             <div 
-                                class="p-2 mr-8 bg-orange-200 rounded-xl flex"
+                                class="p-2 mr-8 bg-orange-200 dark:bg-orange-950/50 rounded-xl flex"
                                 :class="{ 'hidden': day.entries.length === 0 }"
                             >
-                                <Flame :size="24" class="text-amber-500 mr-2" />
+                                <Flame :size="24" class="text-amber-500 dark:text-amber-400 mr-2" />
                                 <span 
-                                    class="text-orange-600 font-bold text-sm relative mr-2"
+                                    class="text-orange-600 dark:text-orange-400 font-bold text-sm relative mr-2"
                                     style="top: 2px;" 
                                 >
                                     {{ day.streakCount }}
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="">
-                        <div v-for="entry in day.entries" :key="entry.bookTitle + entry.duration" class="mb-2 ml-2 mr-2 rounded-md bg-sky-100 p-2 min-w-0 break-words border-l-6 border-l-sky-600 text-sky-600">
+                        <div v-for="entry in day.entries" :key="entry.bookTitle + entry.duration" class="mb-2 ml-2 mr-2 rounded-md bg-sky-100 dark:bg-sky-950/50 p-2 min-w-0 break-words border-l-6 border-l-sky-600 dark:border-l-sky-400 text-sky-600 dark:text-sky-400">
                             <div class="font-bold">{{ entry.bookTitle }}</div>
                             <div class="text-sm">{{ entry.bookAuthor }}</div>
                             <div class="font-bold">{{ entry.duration }} minutes</div>

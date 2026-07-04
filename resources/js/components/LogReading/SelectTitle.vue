@@ -2,28 +2,28 @@
     <div class="text-center w-full px-2 md:w-1/2 mx-auto">
         <h2 class="my-4">Select A Title</h2>
 
-        <div class="rounded-xl p-4 bg-gray-50">
+        <div class="rounded-xl p-4 bg-gray-50 dark:bg-neutral-800/50">
             <div>
                 <Popover :open="isPopoverOpen && searchResults.length > 0" @update:open="(val) => isPopoverOpen = val">
                     <PopoverTrigger as-child>
                         <div class="relative w-full max-w-md mx-auto mt-4">
-                            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-neutral-500 pointer-events-none" />
                             <Input 
                                 type="text" 
                                 placeholder="Search by title or author..." 
-                                class="w-full bg-white pl-10 pr-10 md:text-lg"
+                                class="w-full bg-white dark:bg-neutral-950 pl-10 pr-10 md:text-lg"
                                 v-model="searchQuery"
                                 @input="search"
                             />
-                            <Loader2 v-if="isSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-gray-400" />
+                            <Loader2 v-if="isSearching" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-gray-400 dark:text-neutral-500" />
                         </div>
                     </PopoverTrigger>
                     <PopoverContent class="w-full max-w-md max-h-60 overflow-y-auto p-0">
                     <div class="grid p-0">
                         <div v-for="(result, resultIndex) in searchResults" :key="resultIndex" @click="selectResult(result)">
-                            <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                            <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer">
                                 <img v-if="result.cover_edition_key" :src="'/book-cover?id=' + result.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
-                                <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600">{{ result.title }}</div>
+                                <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 dark:bg-neutral-700 text-[10px] leading-tight text-center p-1 text-gray-600 dark:text-neutral-400">{{ result.title }}</div>
                                 <div class="flex-1 min-w-0 text-left">
                                     <div class="font-bold truncate">
                                         {{ result.title }}
@@ -31,7 +31,7 @@
                                             ({{ result.subtitle }})
                                         </template>
                                     </div>
-                                    <div class="text-sm text-gray-500 truncate">{{ result.author_name ? result.author_name.join(', ') : 'Unknown Author' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-neutral-400 truncate">{{ result.author_name ? result.author_name.join(', ') : 'Unknown Author' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
             <div>
                 <Button 
                     @click="manuallyEnterTitle" 
-                    class="mt-4 text-lg text-gray-500 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300"
+                    class="mt-4 text-lg text-gray-500 dark:text-neutral-400 hover:text-gray-600 dark:hover:text-neutral-300 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 border border-gray-300 dark:border-neutral-600"
                 >
                     <Pencil />
                     Manually Enter Title
@@ -50,13 +50,13 @@
             </div>
         </div>
 
-        <div class="rounded-xl p-4 bg-gray-50 mt-8" v-if="props.recentBooks.length > 0">
+        <div class="rounded-xl p-4 bg-gray-50 dark:bg-neutral-800/50 mt-8" v-if="props.recentBooks.length > 0">
             <div class="text-left font-bold mb-2">Recently Logged Books</div>
             <div class="grid gap-2">
                 <div v-for="(book, index) in props.recentBooks" :key="index" @click="selectResult(book)">
-                    <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 cursor-pointer">
+                    <div class="flex items-center gap-3 p-2 rounded hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer">
                         <img v-if="book.cover_edition_key" :src="'/book-cover?id=' + book.cover_edition_key" alt="Book Cover" class="w-12 h-18 object-cover rounded shrink-0">
-                        <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 text-[10px] leading-tight text-center p-1 text-gray-600">{{ book.title }}</div>
+                        <div v-else class="w-12 h-18 rounded shrink-0 flex items-center justify-center bg-gray-200 dark:bg-neutral-700 text-[10px] leading-tight text-center p-1 text-gray-600 dark:text-neutral-400">{{ book.title }}</div>
                         <div class="flex-1 min-w-0 text-left">
                             <div class="font-bold truncate">
                                 {{ book.title }}
@@ -64,7 +64,7 @@
                                     ({{ book.subtitle }})
                                 </template>
                             </div>
-                            <div class="text-sm text-gray-500 truncate">{{ book.author_name ? book.author_name.join(', ') : 'Unknown Author' }}</div>
+                            <div class="text-sm text-gray-500 dark:text-neutral-400 truncate">{{ book.author_name ? book.author_name.join(', ') : 'Unknown Author' }}</div>
                         </div>
                     </div>
                 </div>
