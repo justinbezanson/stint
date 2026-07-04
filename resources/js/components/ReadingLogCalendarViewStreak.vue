@@ -2,7 +2,7 @@
     <template v-if="isStreakStart">
         <div>
             <div 
-                class="py-2 bg-orange-200 rounded-l-lg ml-4 border-l-6 border-l-orange-500"
+                class="py-2 bg-orange-200 dark:bg-orange-950/50 rounded-l-lg ml-4 border-l-6 border-l-orange-500 dark:border-l-orange-400"
                 :class="{ 'hidden': day.entries.length === 0 }"
             >
                 &nbsp;
@@ -13,23 +13,23 @@
     <template v-else-if="isStreakEnd">
         <div>
             <div 
-                class="py-2 bg-orange-200 rounded-r-lg mr-4 flex justify-end relative z-10"
+                class="py-2 bg-orange-200 dark:bg-orange-950/50 rounded-r-lg mr-4 flex justify-end relative z-10"
                 :class="{ 'hidden': day.entries.length === 0 }"
             >
                 <span 
-                    class="text-orange-600 font-bold text-sm relative mr-2"
+                    class="text-orange-600 dark:text-orange-400 font-bold text-sm relative mr-2"
                     style="top: 2px;"
                 >
                     {{ streakText }}
                 </span>
-                <Flame :size="24" class="text-amber-500 mr-2" />
+                <Flame :size="24" class="text-amber-500 dark:text-amber-400 mr-2" />
             </div>
         </div>
     </template>
 
     <template v-else>
         <div 
-            class="py-2 bg-orange-200 relative z-10"
+            class="py-2 bg-orange-200 dark:bg-orange-950/50 relative z-10"
             :class="{ 'hidden': day.entries.length === 0 }"
         >
             &nbsp;

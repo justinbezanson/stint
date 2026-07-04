@@ -21,7 +21,7 @@ const props = defineProps<{
       type="button" 
       @click="modelValue = props.valueLeft"
       class="p-1"
-      :class="{ 'bg-gray-100': modelValue == props.valueLeft }"
+        :class="{ 'bg-gray-100 dark:bg-neutral-700': modelValue == props.valueLeft }"
     >
       <slot name="left">
         <component :is="props.iconLeft" v-if="props.iconLeft" />
@@ -34,7 +34,7 @@ const props = defineProps<{
       type="button" 
       @click="modelValue = props.valueRight"
       class="p-1"
-      :class="{ 'bg-gray-100': modelValue == props.valueRight }"
+        :class="{ 'bg-gray-100 dark:bg-neutral-700': modelValue == props.valueRight }"
     >
       <slot name="right">
         <component :is="props.iconRight" v-if="props.iconRight" />
